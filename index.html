@@ -1,0 +1,2697 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Grammatica Spire — Maître des Mots</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — DARK FANTASY GRIMOIRE
+   ═══════════════════════════════════════════ */
+:root {
+  --gold:       #e8c56a;
+  --gold-bright:#ffd97d;
+  --gold-dim:   #9a7a30;
+  --gold-glow:  rgba(232,197,106,0.35);
+  --crimson:    #c0392b;
+  --crimson-glow:rgba(192,57,43,0.4);
+  --void:       #06060f;
+  --deep:       #0d0d1e;
+  --panel:      #13132a;
+  --panel-light:#1c1c38;
+  --border:     rgba(232,197,106,0.18);
+  --border-bright:rgba(232,197,106,0.5);
+  --text:       #ede6d5;
+  --text-muted: #8a7f6e;
+  --text-dim:   #5a5248;
+  --blue:       #5badec;
+  --blue-glow:  rgba(91,173,236,0.3);
+  --green:      #2ecc71;
+  --green-glow: rgba(46,204,113,0.3);
+  --purple:     #9b59b6;
+  --purple-glow:rgba(155,89,182,0.3);
+  --orange:     #e67e22;
+  --hp:         #e74c3c;
+  --mana:       #3498db;
+  --radius:     10px;
+  --radius-lg:  16px;
+  --shadow-gold: 0 0 30px rgba(232,197,106,0.2), 0 4px 20px rgba(0,0,0,0.6);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5);
+  --transition:  0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+width: 100%; height: 100%; overflow: hidden;
+background: var(–void);
+color: var(–text);
+font-family: ‘Nunito’, sans-serif;
+touch-action: manipulation;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ── CANVAS BACKGROUND ── */
+#vfx { position:fixed; inset:0; pointer-events:none; z-index:0; }
+
+/* ── SCREENS ── */
+.scr {
+position: fixed; inset: 0; z-index: 10;
+display: none; flex-direction: column;
+align-items: center; overflow: hidden;
+}
+.scr.on { display: flex; }
+
+/* ══════════════════════════════
+TITLE SCREEN
+══════════════════════════════ */
+#s-title {
+justify-content: center;
+background: radial-gradient(ellipse 80% 70% at 50% 40%, #1a0d35 0%, var(–void) 70%);
+}
+
+.title-wrap { text-align:center; animation: floatY 4s ease-in-out infinite; }
+
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+.title-logo {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(2.4rem, 9vw, 5.5rem);
+font-weight: 900;
+line-height: 1;
+background: linear-gradient(175deg, #fff8e0 0%, var(–gold-bright) 25%, var(–gold) 55%, #a06a00 100%);
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+filter: drop-shadow(0 0 40px rgba(232,197,106,0.5));
+letter-spacing: 1px;
+}
+
+.title-sub {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+color: var(–gold);
+letter-spacing: 8px;
+margin-top: 6px;
+opacity: 0.8;
+text-transform: uppercase;
+}
+
+.title-rune {
+font-size: clamp(1.5rem, 4vw, 2.5rem);
+margin: 14px 0 2px;
+letter-spacing: 12px;
+opacity: 0.4;
+filter: drop-shadow(0 0 8px var(–gold));
+}
+
+.title-tagline {
+font-size: 0.88rem;
+color: var(–text-muted);
+font-style: italic;
+margin-top: 6px;
+letter-spacing: 0.5px;
+}
+
+.title-menu {
+margin-top: 36px;
+display: flex;
+flex-direction: column;
+gap: 11px;
+width: min(320px, 88vw);
+}
+
+.badge-alloprof {
+display: inline-flex; align-items: center; gap: 5px;
+background: rgba(91,173,236,0.12);
+border: 1px solid rgba(91,173,236,0.3);
+color: var(–blue);
+border-radius: 20px;
+padding: 4px 12px;
+font-size: 0.68rem;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+}
+
+.title-footer {
+margin-top: 22px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 6px;
+}
+
+/* ══════════════════════════════
+BUTTONS
+══════════════════════════════ */
+.btn {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+border: none; border-radius: var(–radius);
+font-family: ‘Nunito’, sans-serif; font-weight: 800;
+cursor: pointer; transition: var(–transition);
+letter-spacing: 0.5px;
+position: relative; overflow: hidden;
+-webkit-user-select: none; user-select: none;
+}
+
+.btn::after {
+content: ‘’;
+position: absolute; inset: 0;
+background: rgba(255,255,255,0);
+transition: background 0.15s;
+}
+.btn:active::after { background: rgba(255,255,255,0.07); }
+
+.btn-gold {
+background: linear-gradient(140deg, #b8860b 0%, #e8c56a 40%, #ffd97d 60%, #b8860b 100%);
+color: #1a0e00;
+font-size: 1rem;
+padding: 15px 28px;
+box-shadow: 0 0 24px rgba(232,197,106,0.35), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.btn-gold:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 40px rgba(232,197,106,0.55), 0 8px 20px rgba(0,0,0,0.5); }
+.btn-gold:active { transform: translateY(0) scale(0.98); }
+
+.btn-outline {
+background: rgba(232,197,106,0.06);
+border: 1px solid var(–border);
+color: var(–gold);
+font-size: 0.88rem;
+padding: 12px 24px;
+}
+.btn-outline:hover { background: rgba(232,197,106,0.12); border-color: var(–border-bright); }
+
+.btn-danger {
+background: linear-gradient(140deg, #8b1a1a 0%, var(–crimson) 100%);
+color: white;
+font-size: 0.88rem;
+padding: 12px 24px;
+box-shadow: 0 0 16px var(–crimson-glow);
+}
+
+.btn-ghost {
+background: transparent;
+border: 1px solid rgba(255,255,255,0.1);
+color: var(–text-muted);
+font-size: 0.8rem;
+padding: 8px 16px;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.05); color: var(–text); }
+
+/* ══════════════════════════════
+MAP SCREEN
+══════════════════════════════ */
+#s-map {
+background: radial-gradient(ellipse 100% 80% at 50% 0%, #130b2a 0%, var(–void) 65%);
+justify-content: flex-start;
+overflow-y: auto;
+padding: 0 0 24px;
+-webkit-overflow-scrolling: touch;
+}
+
+.map-topbar {
+width: 100%; max-width: 520px;
+align-self: center;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 14px 16px;
+background: linear-gradient(135deg, rgba(19,19,42,0.98), rgba(13,13,30,0.98));
+border-bottom: 1px solid var(–border);
+position: sticky; top: 0; z-index: 50;
+backdrop-filter: blur(12px);
+}
+
+.map-chapter-info { flex: 1; }
+
+.map-chapter-name {
+font-family: ‘Cinzel’, serif;
+font-size: 0.9rem;
+color: var(–gold);
+letter-spacing: 0.5px;
+}
+
+.chapter-dots {
+display: flex; gap: 5px; margin-top: 5px;
+}
+.chapter-dot {
+height: 4px; border-radius: 2px;
+transition: all 0.4s;
+flex: 1;
+max-width: 32px;
+}
+.chapter-dot.past { background: var(–gold-dim); }
+.chapter-dot.current { background: var(–gold-bright); box-shadow: 0 0 6px var(–gold); }
+.chapter-dot.future { background: rgba(255,255,255,0.08); }
+
+.map-stats-row {
+display: flex; gap: 8px;
+}
+.stat-chip {
+display: flex; align-items: center; gap: 4px;
+background: rgba(0,0,0,0.4);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 5px 10px;
+font-size: 0.78rem; font-weight: 700;
+cursor: default;
+transition: var(–transition);
+}
+.stat-chip.clickable { cursor: pointer; }
+.stat-chip.clickable:hover { border-color: var(–gold); background: rgba(232,197,106,0.08); }
+.stat-chip .chip-icon { font-size: 0.9rem; }
+
+.map-body {
+width: 100%; max-width: 520px;
+align-self: center;
+padding: 20px 16px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.map-row-label {
+font-family: ‘Cinzel’, serif;
+font-size: 0.6rem;
+color: var(–text-dim);
+letter-spacing: 3px;
+text-align: center;
+margin-bottom: 2px;
+text-transform: uppercase;
+}
+
+.map-row {
+display: flex;
+justify-content: center;
+gap: 10px;
+position: relative;
+}
+
+/* connector lines between rows */
+.map-connector {
+height: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.map-connector-line {
+width: 2px; height: 100%;
+background: linear-gradient(to bottom, var(–border), transparent);
+}
+
+.node {
+width: clamp(64px, 16vw, 80px);
+height: clamp(64px, 16vw, 80px);
+border-radius: 50%;
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+cursor: pointer;
+position: relative;
+transition: var(–transition);
+border: 2.5px solid transparent;
+}
+
+.node-inner {
+display: flex; flex-direction: column;
+align-items: center; gap: 2px;
+}
+
+.node-emoji { font-size: 1.7rem; line-height: 1; }
+.node-label {
+font-family: ‘Cinzel’, serif;
+font-size: 0.42rem;
+letter-spacing: 0.5px;
+text-transform: uppercase;
+font-weight: 700;
+}
+
+.node.available { animation: nodeGlow 2.5s ease-in-out infinite; }
+
+@keyframes nodeGlow {
+0%,100% { box-shadow: 0 0 10px currentColor, inset 0 0 10px rgba(255,255,255,0.03); }
+50% { box-shadow: 0 0 28px currentColor, 0 0 50px currentColor, inset 0 0 15px rgba(255,255,255,0.05); }
+}
+
+.node:hover.available { transform: scale(1.12); }
+.node:active.available { transform: scale(0.95); }
+
+.node.visited { opacity: 0.32; cursor: default; filter: grayscale(0.6); }
+.node.locked { opacity: 0.15; cursor: default; }
+
+.node-combat   { background: radial-gradient(circle, rgba(139,26,26,0.5) 0%, rgba(80,10,10,0.3) 100%); border-color: #c0392b; color: #e74c3c; }
+.node-elite    { background: radial-gradient(circle, rgba(100,40,130,0.5) 0%, rgba(60,20,80,0.3) 100%); border-color: #8e44ad; color: #9b59b6; }
+.node-boss     { background: radial-gradient(circle, rgba(180,140,0,0.35) 0%, rgba(90,60,0,0.2) 100%); border-color: var(–gold); color: var(–gold); }
+.node-rest     { background: radial-gradient(circle, rgba(20,100,50,0.5) 0%, rgba(10,60,30,0.3) 100%); border-color: #27ae60; color: #2ecc71; }
+.node-shop     { background: radial-gradient(circle, rgba(130,80,0,0.5) 0%, rgba(80,40,0,0.3) 100%); border-color: #e67e22; color: #f39c12; }
+.node-mystery  { background: radial-gradient(circle, rgba(30,60,100,0.5) 0%, rgba(15,30,60,0.3) 100%); border-color: var(–blue); color: var(–blue); }
+
+/* visited checkmark */
+.node.visited::after {
+content: ‘✓’;
+position: absolute;
+top: -6px; right: -6px;
+width: 20px; height: 20px;
+background: var(–green);
+border-radius: 50%;
+font-size: 0.7rem;
+display: flex; align-items: center; justify-content: center;
+color: white;
+font-weight: 900;
+}
+
+/* ══════════════════════════════
+BATTLE SCREEN
+══════════════════════════════ */
+#s-battle {
+justify-content: space-between;
+background: var(–void);
+padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+}
+
+/* battle BG */
+.battle-bg {
+position: absolute; inset: 0; pointer-events: none; z-index: 0;
+background: radial-gradient(ellipse 100% 50% at 50% 100%, #1a0820 0%, var(–void) 70%);
+}
+.battle-bg::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: repeating-linear-gradient(
+-45deg,
+transparent, transparent 40px,
+rgba(232,197,106,0.008) 40px,
+rgba(232,197,106,0.008) 41px
+);
+}
+
+.battle-layer { position: relative; z-index: 2; width: 100%; }
+
+/* ── TOP BAR ── */
+.battle-topbar {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 12px 6px;
+gap: 8px;
+width: 100%; max-width: 640px;
+align-self: center;
+}
+
+.combatant-block { flex: 1; min-width: 0; }
+
+.comb-header {
+display: flex; align-items: center; gap: 6px;
+margin-bottom: 5px;
+}
+.comb-name {
+font-family: ‘Cinzel’, serif;
+font-size: 0.72rem;
+color: var(–gold);
+letter-spacing: 0.3px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.comb-name.enemy-name { color: #ff8888; }
+
+.hpbar-track {
+height: 11px;
+background: rgba(0,0,0,0.6);
+border-radius: 6px;
+border: 1px solid rgba(255,255,255,0.07);
+overflow: hidden;
+position: relative;
+}
+.hpbar-fill {
+height: 100%;
+border-radius: 5px;
+transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.player-fill { background: linear-gradient(90deg, #c0392b 0%, #e74c3c 60%, #ff6b6b 100%); }
+.enemy-fill  { background: linear-gradient(90deg, #8b0000 0%, #c0392b 60%, #e74c3c 100%); box-shadow: inset 0 0 8px rgba(0,0,0,0.4); }
+.boss-fill   { background: linear-gradient(90deg, #6b0000, #c0392b, #e74c3c, #ff9900); background-size: 200% 100%; animation: bossHpShimmer 2s linear infinite; }
+@keyframes bossHpShimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+.hpbar-text {
+font-size: 0.66rem;
+color: var(–text-muted);
+margin-top: 3px;
+display: flex; justify-content: space-between;
+}
+
+.status-row {
+display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px;
+}
+.sicon {
+width: 22px; height: 22px;
+border-radius: 5px;
+display: flex; align-items: center; justify-content: center;
+font-size: 0.8rem;
+border: 1px solid rgba(255,255,255,0.15);
+position: relative;
+cursor: help;
+}
+.sicon .scount {
+position: absolute; bottom: -5px; right: -5px;
+background: var(–deep);
+border-radius: 50%; width: 13px; height: 13px;
+font-size: 0.5rem; font-weight: 900;
+display: flex; align-items: center; justify-content: center;
+border: 1px solid rgba(255,255,255,0.2);
+color: white;
+}
+.sicon-str  { background: rgba(231,76,60,0.2); }
+.sicon-shld { background: rgba(52,152,219,0.2); }
+.sicon-draw { background: rgba(52,219,100,0.2); }
+.sicon-burn { background: rgba(230,126,34,0.2); }
+.sicon-weak { background: rgba(150,150,150,0.2); }
+
+.turn-mid {
+display: flex; flex-direction: column; align-items: center; gap: 3px;
+min-width: 52px;
+}
+.turn-num {
+font-family: ‘Cinzel’, serif;
+font-size: 0.72rem;
+color: var(–text-dim);
+letter-spacing: 1px;
+}
+.turn-vs {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: 0.65rem;
+color: var(–gold-dim);
+}
+
+/* ── ARENA ── */
+.battle-arena {
+width: 100%; max-width: 640px;
+align-self: center;
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+padding: 0 20px;
+height: clamp(130px, 26vh, 200px);
+position: relative;
+}
+
+.fighter-area {
+display: flex; flex-direction: column;
+align-items: center; gap: 4px;
+}
+
+.fighter-sprite {
+font-size: clamp(3.8rem, 11vw, 5.5rem);
+line-height: 1;
+-webkit-user-select: none; user-select: none;
+transition: filter 0.3s, transform 0.2s;
+}
+.fighter-sprite.player-sprite { animation: heroBreath 3s ease-in-out infinite; filter: drop-shadow(0 0 16px rgba(232,197,106,0.35)); }
+.fighter-sprite.enemy-sprite  { animation: enemyBreath 2.5s ease-in-out infinite; filter: drop-shadow(0 0 16px rgba(192,57,43,0.45)); transform: scaleX(-1); }
+
+@keyframes heroBreath  { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-7px) rotate(1deg)} }
+@keyframes enemyBreath { 0%,100%{transform:scaleX(-1) translateY(0)} 50%{transform:scaleX(-1) translateY(-6px) rotate(2deg)} }
+
+.hit-flash-player { animation: hitFlashAnim 0.4s ease !important; }
+.hit-flash-enemy  { animation: enemyHitAnim 0.4s ease !important; }
+@keyframes hitFlashAnim { 0%,100%{filter:drop-shadow(0 0 16px rgba(232,197,106,0.35))} 50%{filter:brightness(3) drop-shadow(0 0 30px red)} }
+@keyframes enemyHitAnim { 0%,100%{filter:drop-shadow(0 0 16px rgba(192,57,43,0.45))} 50%{filter:brightness(3) drop-shadow(0 0 30px red)} }
+
+.shield-badge {
+display: flex; align-items: center; gap: 3px;
+background: rgba(52,152,219,0.2);
+border: 1px solid rgba(52,152,219,0.4);
+border-radius: 12px;
+padding: 2px 8px;
+font-size: 0.68rem; font-weight: 800;
+color: var(–blue);
+}
+
+.enemy-intent {
+background: rgba(0,0,0,0.65);
+border: 1px solid rgba(255,100,100,0.25);
+border-radius: var(–radius);
+padding: 6px 10px;
+text-align: center;
+max-width: 130px;
+backdrop-filter: blur(8px);
+}
+.intent-label { font-size: 0.55rem; color: var(–text-dim); font-family: ‘Cinzel’, serif; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+.intent-val   { font-size: 0.78rem; font-weight: 700; color: #ff8888; }
+.intent-debuff { font-size: 0.65rem; color: var(–orange); margin-top: 2px; }
+
+/* ── QUESTION PANEL ── */
+.question-panel {
+width: 100%; max-width: 640px;
+align-self: center;
+background: linear-gradient(160deg, rgba(19,19,42,0.97) 0%, rgba(13,13,30,0.97) 100%);
+border: 1px solid var(–border);
+border-left: none; border-right: none;
+padding: 10px 14px;
+backdrop-filter: blur(12px);
+}
+
+.q-badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+
+.q-badge {
+display: inline-flex; align-items: center; gap: 4px;
+padding: 3px 10px;
+border-radius: 20px;
+font-family: ‘Cinzel’, serif;
+font-size: 0.6rem;
+letter-spacing: 2px;
+text-transform: uppercase;
+border: 1px solid currentColor;
+font-weight: 700;
+}
+.qb-homophone { color: var(–purple); background: rgba(155,89,182,0.12); }
+.qb-subjonctif{ color: var(–gold); background: rgba(232,197,106,0.1); }
+.qb-connecteur{ color: var(–green); background: rgba(46,204,113,0.1); }
+.qb-explicatif{ color: var(–blue); background: rgba(91,173,236,0.1); }
+.qb-grammaire { color: var(–orange); background: rgba(230,126,34,0.1); }
+.qb-general   { color: var(–text-muted); background: rgba(255,255,255,0.05); }
+
+.q-streak {
+margin-left: auto;
+display: flex; align-items: center; gap: 4px;
+font-size: 0.7rem; font-weight: 800;
+color: var(–orange);
+}
+
+.q-text {
+font-size: clamp(0.82rem, 2.3vw, 0.97rem);
+line-height: 1.55;
+color: var(–text);
+font-weight: 600;
+}
+.q-blank {
+display: inline-flex; align-items: center;
+background: rgba(232,197,106,0.1);
+border-bottom: 2px solid var(–gold);
+border-radius: 3px 3px 0 0;
+padding: 0 8px;
+min-width: 52px;
+color: var(–gold-bright);
+font-weight: 800;
+justify-content: center;
+}
+
+/* ── HAND AREA ── */
+.hand-area {
+width: 100%; max-width: 640px;
+align-self: center;
+padding: 6px 10px 8px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.hand-meta {
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 2px;
+}
+
+.mana-bar {
+display: flex; align-items: center; gap: 7px;
+}
+.mana-gems {
+display: flex; gap: 4px;
+}
+.mgem {
+width: 16px; height: 16px;
+border-radius: 50%;
+transition: all 0.35s;
+}
+.mgem.full {
+background: radial-gradient(circle at 35% 35%, #7bc8ff, var(–mana));
+box-shadow: 0 0 10px rgba(52,152,219,0.7), 0 0 20px rgba(52,152,219,0.3);
+}
+.mgem.empty {
+background: rgba(52,152,219,0.1);
+border: 1px solid rgba(52,152,219,0.25);
+box-shadow: none;
+}
+.mana-label { font-size: 0.72rem; color: var(–blue); font-weight: 700; }
+
+.hand-right {
+display: flex; align-items: center; gap: 8px;
+}
+.draw-info { font-size: 0.68rem; color: var(–text-dim); }
+.end-btn {
+background: linear-gradient(135deg, rgba(230,126,34,0.15), rgba(180,80,0,0.2));
+border: 1.5px solid rgba(230,126,34,0.4);
+color: var(–orange);
+font-family: ‘Nunito’, sans-serif;
+font-weight: 800;
+font-size: 0.78rem;
+padding: 8px 14px;
+border-radius: 8px;
+cursor: pointer;
+transition: var(–transition);
+letter-spacing: 0.3px;
+}
+.end-btn:hover { background: rgba(230,126,34,0.25); border-color: var(–orange); box-shadow: 0 0 16px rgba(230,126,34,0.3); }
+.end-btn:active { transform: scale(0.96); }
+
+.cards-scroll {
+display: flex; gap: 8px;
+overflow-x: auto; overflow-y: visible;
+padding: 8px 4px 14px;
+scrollbar-width: none;
+-webkit-overflow-scrolling: touch;
+align-items: flex-end;
+}
+.cards-scroll::-webkit-scrollbar { display: none; }
+
+/* ══════════════════════════════
+CARD
+══════════════════════════════ */
+.card {
+flex-shrink: 0;
+width: clamp(88px, 21vw, 112px);
+height: clamp(132px, 30vh, 166px);
+border-radius: 12px;
+border: 2px solid rgba(255,255,255,0.07);
+background: linear-gradient(160deg, #1e1e40 0%, #111128 100%);
+display: flex; flex-direction: column;
+padding: 8px 7px 7px;
+cursor: pointer;
+position: relative;
+overflow: hidden;
+transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, border-color 0.2s;
+box-shadow: var(–shadow-card);
+-webkit-user-select: none; user-select: none;
+}
+
+.card::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0;
+height: 40%;
+background: linear-gradient(to bottom, rgba(255,255,255,0.04), transparent);
+border-radius: 10px 10px 0 0;
+pointer-events: none;
+}
+
+.card:hover:not(.card-disabled) {
+transform: translateY(-16px) scale(1.07);
+z-index: 100;
+}
+.card:active:not(.card-disabled) { transform: translateY(-8px) scale(1.02); }
+.card.card-selected { transform: translateY(-22px) scale(1.1); z-index: 200; }
+.card.card-disabled { opacity: 0.38; cursor: not-allowed; filter: grayscale(0.5); }
+.card.card-disabled:hover { transform: none; }
+
+.card-c-attack { border-color: rgba(192,57,43,0.35); }
+.card-c-attack:hover:not(.card-disabled) { border-color: rgba(231,76,60,0.7); box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 24px rgba(231,76,60,0.3); }
+.card-c-skill  { border-color: rgba(52,152,219,0.3); }
+.card-c-skill:hover:not(.card-disabled)  { border-color: rgba(52,152,219,0.7); box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 24px rgba(52,152,219,0.3); }
+.card-c-power  { border-color: rgba(155,89,182,0.3); }
+.card-c-power:hover:not(.card-disabled)  { border-color: rgba(155,89,182,0.7); box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 24px rgba(155,89,182,0.3); }
+
+.card-cost-gem {
+position: absolute; top: 6px; left: 6px;
+width: 24px; height: 24px;
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 0.78rem; font-weight: 900; color: white;
+z-index: 2;
+}
+.gem-attack { background: radial-gradient(circle at 35% 35%, #e74c3c, #8b1a1a); box-shadow: 0 0 8px rgba(231,76,60,0.6); }
+.gem-skill  { background: radial-gradient(circle at 35% 35%, #3498db, #1a5a8b); box-shadow: 0 0 8px rgba(52,152,219,0.6); }
+.gem-power  { background: radial-gradient(circle at 35% 35%, #9b59b6, #5b1e7a); box-shadow: 0 0 8px rgba(155,89,182,0.6); }
+.gem-zero   { background: radial-gradient(circle at 35% 35%, #f0f0f0, #888); }
+
+.card-stripe {
+height: 2.5px;
+border-radius: 2px;
+margin: 24px -3px 6px;
+}
+.stripe-attack { background: linear-gradient(90deg, rgba(231,76,60,0.8), transparent); }
+.stripe-skill  { background: linear-gradient(90deg, rgba(52,152,219,0.8), transparent); }
+.stripe-power  { background: linear-gradient(90deg, rgba(155,89,182,0.8), transparent); }
+
+.card-icon { font-size: 1.75rem; text-align: center; margin: 2px 0; }
+.card-name {
+font-family: ‘Cinzel’, serif;
+font-size: 0.57rem;
+font-weight: 700;
+text-align: center;
+line-height: 1.25;
+margin-top: 2px;
+}
+.cn-attack { color: #ff9999; }
+.cn-skill  { color: #99ccff; }
+.cn-power  { color: #cc99ff; }
+
+.card-desc {
+font-size: 0.52rem;
+color: var(–text-muted);
+text-align: center;
+line-height: 1.3;
+margin-top: 3px;
+flex: 1;
+}
+
+.card-effect {
+font-size: 0.6rem;
+font-weight: 800;
+text-align: center;
+padding: 3px 4px;
+border-radius: 4px;
+margin-top: 2px;
+}
+.ce-attack { background: rgba(231,76,60,0.12); color: #ff9999; }
+.ce-skill  { background: rgba(52,152,219,0.12); color: #99ccff; }
+.ce-power  { background: rgba(155,89,182,0.12); color: #cc99ff; }
+
+/* ══════════════════════════════
+CHOICES MODAL
+══════════════════════════════ */
+.modal-bg {
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.88);
+z-index: 300;
+display: none;
+align-items: center; justify-content: center;
+padding: 16px;
+backdrop-filter: blur(8px);
+}
+.modal-bg.open { display: flex; }
+
+.choices-modal {
+width: 100%; max-width: 480px;
+background: linear-gradient(160deg, rgba(22,22,46,0.99) 0%, rgba(13,13,30,0.99) 100%);
+border: 1px solid var(–border-bright);
+border-radius: var(–radius-lg);
+padding: 22px 18px;
+box-shadow: 0 0 60px rgba(0,0,0,0.8), 0 0 30px var(–gold-glow);
+display: flex; flex-direction: column; gap: 14px;
+animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn { from { transform: scale(0.88) translateY(20px); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-header { display: flex; align-items: flex-start; gap: 10px; }
+.modal-card-icon { font-size: 2rem; }
+.modal-title {
+font-family: ‘Cinzel’, serif;
+font-size: 1.05rem;
+color: var(–gold);
+font-weight: 700;
+}
+.modal-subtitle { font-size: 0.75rem; color: var(–text-muted); margin-top: 2px; }
+
+.modal-question {
+background: rgba(0,0,0,0.35);
+border-left: 3px solid var(–gold-dim);
+border-radius: 0 8px 8px 0;
+padding: 10px 14px;
+font-size: 0.92rem;
+font-weight: 600;
+line-height: 1.5;
+color: var(–text);
+}
+
+.choices-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 9px;
+}
+.choices-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+.choices-grid.cols1 { grid-template-columns: 1fr; }
+
+.choice {
+background: rgba(255,255,255,0.04);
+border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 10px;
+padding: 12px 10px;
+cursor: pointer;
+text-align: center;
+transition: var(–transition);
+display: flex; flex-direction: column; gap: 4px;
+}
+.choice:hover { background: rgba(232,197,106,0.08); border-color: rgba(232,197,106,0.35); transform: scale(1.03); }
+.choice:active { transform: scale(0.97); }
+
+.choice-letter {
+font-family: ‘Cinzel’, serif;
+font-size: 0.7rem;
+color: var(–text-dim);
+font-weight: 700;
+}
+.choice-text {
+font-size: 0.9rem;
+font-weight: 700;
+color: var(–text);
+}
+.choice-hint { font-size: 0.68rem; color: var(–text-dim); line-height: 1.3; }
+
+.choice.state-correct {
+border-color: var(–green) !important;
+background: rgba(46,204,113,0.15) !important;
+box-shadow: 0 0 20px var(–green-glow);
+animation: correctPulse 0.5s ease;
+}
+.choice.state-wrong {
+border-color: var(–hp) !important;
+background: rgba(231,76,60,0.15) !important;
+animation: wrongShake 0.4s ease;
+}
+.choice.state-reveal {
+border-color: var(–green) !important;
+background: rgba(46,204,113,0.1) !important;
+}
+@keyframes correctPulse { 0%{transform:scale(1)} 40%{transform:scale(1.07)} 100%{transform:scale(1)} }
+@keyframes wrongShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)} }
+
+.hint-box {
+background: rgba(232,197,106,0.07);
+border: 1px solid rgba(232,197,106,0.2);
+border-radius: 8px;
+padding: 9px 12px;
+font-size: 0.78rem;
+color: var(–gold);
+line-height: 1.5;
+display: none;
+}
+.hint-box.show { display: block; }
+
+.modal-footer {
+display: flex; gap: 8px; justify-content: flex-end;
+}
+
+/* ══════════════════════════════
+REWARD SCREEN
+══════════════════════════════ */
+#s-reward {
+justify-content: center;
+background: radial-gradient(ellipse 80% 70% at 50% 50%, #1a1000 0%, var(–void) 70%);
+padding: 20px;
+overflow-y: auto;
+}
+
+.reward-header { text-align: center; margin-bottom: 20px; }
+.reward-title {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(1.6rem, 5vw, 2.8rem);
+background: linear-gradient(180deg, var(–gold-bright), var(–gold));
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+filter: drop-shadow(0 0 20px var(–gold-glow));
+}
+.reward-subtitle { color: var(–text-muted); font-size: 0.88rem; margin-top: 6px; }
+
+.reward-picks {
+display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+margin: 16px 0;
+}
+.reward-pick-wrap {
+cursor: pointer;
+position: relative;
+transition: var(–transition);
+}
+.reward-pick-wrap:hover { transform: scale(1.06); }
+.reward-pick-wrap.chosen { opacity: 0.45; cursor: default; pointer-events: none; }
+.reward-pick-wrap.chosen::after {
+content: ‘✓ Ajoutée’;
+position: absolute; inset: 0;
+display: flex; align-items: center; justify-content: center;
+font-weight: 900; color: var(–green);
+font-size: 0.9rem;
+background: rgba(0,0,0,0.6);
+border-radius: 12px;
+}
+
+.reward-gold-line {
+text-align: center;
+color: var(–gold);
+font-weight: 700;
+font-size: 0.9rem;
+margin-bottom: 12px;
+}
+
+/* ══════════════════════════════
+DECK VIEW SCREEN
+══════════════════════════════ */
+#s-deck {
+background: rgba(0,0,0,0.96);
+overflow-y: auto;
+padding: 16px;
+-webkit-overflow-scrolling: touch;
+}
+
+.deck-topbar {
+display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 16px;
+width: 100%; max-width: 600px;
+align-self: center;
+}
+.deck-title {
+font-family: ‘Cinzel’, serif;
+color: var(–gold);
+font-size: 1rem;
+}
+
+.deck-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+gap: 10px;
+width: 100%; max-width: 600px;
+align-self: center;
+}
+
+/* ══════════════════════════════
+SHOP SCREEN
+══════════════════════════════ */
+#s-shop {
+background: radial-gradient(ellipse at top, #1a0e00 0%, var(–void) 65%);
+overflow-y: auto;
+padding: 16px;
+-webkit-overflow-scrolling: touch;
+}
+
+.shop-topbar {
+width: 100%; max-width: 560px;
+align-self: center;
+display: flex; justify-content: space-between; align-items: center;
+background: rgba(26,14,0,0.8);
+border: 1px solid rgba(230,126,34,0.25);
+border-radius: 12px;
+padding: 12px 16px;
+margin-bottom: 16px;
+}
+.shop-title { font-family: ‘Cinzel’, serif; font-size: 1rem; color: var(–orange); }
+.shop-sub   { font-size: 0.7rem; color: var(–text-muted); margin-top: 2px; }
+
+.shop-grid {
+display: flex; flex-wrap: wrap; gap: 14px;
+justify-content: center;
+width: 100%; max-width: 560px;
+align-self: center;
+}
+.shop-item {
+position: relative;
+cursor: pointer;
+transition: var(–transition);
+}
+.shop-item:hover { transform: scale(1.04); }
+.shop-price {
+text-align: center;
+margin-top: 6px;
+font-size: 0.8rem;
+font-weight: 800;
+color: var(–gold);
+}
+.shop-item.purchased { opacity: 0.3; pointer-events: none; }
+.shop-item.purchased::after {
+content: ‘Acheté’;
+position: absolute; inset: 0 0 28px;
+display: flex; align-items: center; justify-content: center;
+background: rgba(0,0,0,0.6); border-radius: 12px;
+color: var(–green); font-weight: 900;
+}
+
+.shop-remove-section {
+width: 100%; max-width: 560px;
+align-self: center;
+margin-top: 20px;
+background: rgba(139,26,26,0.15);
+border: 1px solid rgba(192,57,43,0.25);
+border-radius: 12px;
+padding: 14px 16px;
+}
+.shop-remove-title { font-family: ‘Cinzel’, serif; font-size: 0.85rem; color: var(–crimson); margin-bottom: 10px; }
+.remove-btn {
+display: flex; align-items: center; gap: 8px;
+padding: 8px 14px;
+background: rgba(192,57,43,0.1);
+border: 1px solid rgba(192,57,43,0.3);
+border-radius: 8px;
+cursor: pointer;
+transition: var(–transition);
+color: var(–text);
+font-size: 0.78rem; font-weight: 600;
+margin: 4px 0;
+width: 100%;
+}
+.remove-btn:hover { background: rgba(192,57,43,0.2); }
+.remove-cost { margin-left: auto; color: var(–gold); font-weight: 800; font-size: 0.75rem; }
+
+/* ══════════════════════════════
+GAME OVER / WIN
+══════════════════════════════ */
+#s-over, #s-win {
+justify-content: center;
+padding: 24px;
+overflow-y: auto;
+}
+#s-over { background: radial-gradient(ellipse at center, #1f0000 0%, var(–void) 70%); }
+#s-win  { background: radial-gradient(ellipse at center, #1a1200 0%, var(–void) 70%); }
+
+.over-title {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(1.8rem, 6vw, 3.5rem);
+color: var(–crimson);
+text-align: center;
+text-shadow: 0 0 40px rgba(192,57,43,0.6);
+animation: flicker 2s ease-in-out infinite;
+margin-bottom: 8px;
+}
+.win-title {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(1.8rem, 6vw, 3.5rem);
+text-align: center;
+background: linear-gradient(180deg, #fff8e0, var(–gold-bright), var(–gold));
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+filter: drop-shadow(0 0 30px rgba(232,197,106,0.6));
+margin-bottom: 8px;
+}
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.82} }
+
+.end-msg {
+color: var(–text-muted);
+text-align: center;
+max-width: 360px;
+font-size: 0.9rem;
+line-height: 1.6;
+margin-bottom: 16px;
+}
+.stats-box {
+background: rgba(0,0,0,0.4);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 16px;
+width: 100%; max-width: 360px;
+margin-bottom: 20px;
+}
+.stat-row {
+display: flex; justify-content: space-between;
+padding: 6px 0;
+border-bottom: 1px solid rgba(255,255,255,0.05);
+font-size: 0.85rem;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-val { color: var(–gold); font-weight: 800; }
+
+/* ══════════════════════════════
+LESSON POPUP
+══════════════════════════════ */
+#lesson-bg {
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.9);
+z-index: 500;
+display: none;
+align-items: center; justify-content: center;
+padding: 16px;
+backdrop-filter: blur(10px);
+-webkit-overflow-scrolling: touch;
+}
+#lesson-bg.open { display: flex; }
+
+.lesson-modal {
+width: 100%; max-width: 500px;
+max-height: 86vh;
+overflow-y: auto;
+background: linear-gradient(160deg, #1a1a36, #0d0d20);
+border: 1.5px solid var(–gold-dim);
+border-radius: var(–radius-lg);
+padding: 20px 18px;
+box-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 30px var(–gold-glow);
+-webkit-overflow-scrolling: touch;
+}
+
+.lesson-header {
+display: flex; justify-content: space-between; align-items: flex-start;
+margin-bottom: 14px;
+}
+.lesson-title { font-family: ‘Cinzel Decorative’, serif; font-size: 1.15rem; color: var(–gold); }
+.lesson-subtitle { font-size: 0.72rem; color: var(–text-muted); font-style: italic; margin-top: 2px; }
+
+.lesson-sec {
+background: rgba(0,0,0,0.3);
+border-left: 3px solid var(–gold-dim);
+border-radius: 0 8px 8px 0;
+padding: 10px 14px;
+margin-bottom: 10px;
+}
+.lesson-sec h4 { font-family: ‘Cinzel’, serif; font-size: 0.82rem; color: var(–gold); margin-bottom: 6px; }
+.lesson-sec p, .lesson-sec li { font-size: 0.8rem; line-height: 1.55; color: var(–text); }
+.lesson-sec ul { padding-left: 16px; margin-top: 4px; }
+.lesson-sec li { margin-bottom: 3px; }
+.ex { color: var(–gold-bright); font-style: italic; font-weight: 600; }
+b { color: var(–text); }
+
+.lesson-alloprof {
+display: flex; align-items: center; gap: 8px;
+margin-top: 14px; padding-top: 10px;
+border-top: 1px solid var(–border);
+font-size: 0.68rem; color: var(–text-dim);
+}
+
+/* ══════════════════════════════
+VFX OVERLAYS
+══════════════════════════════ */
+#dmg-layer { position:fixed; inset:0; pointer-events:none; z-index:400; }
+
+.dmg-num {
+position: fixed;
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(1.6rem, 5vw, 2.4rem);
+font-weight: 900;
+pointer-events: none;
+z-index: 400;
+animation: dmgRise 1.1s cubic-bezier(0.33,1,0.68,1) forwards;
+text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+@keyframes dmgRise { 0%{transform:translateY(0) scale(0.7);opacity:1} 60%{transform:translateY(-55px) scale(1.1);opacity:1} 100%{transform:translateY(-90px) scale(1);opacity:0} }
+
+#flash-overlay {
+position: fixed; inset: 0; pointer-events: none; z-index: 350;
+opacity: 0;
+}
+.flash-green { animation: flashG 0.4s ease; }
+.flash-red   { animation: flashR 0.4s ease; }
+@keyframes flashG { 0%{background:rgba(46,204,113,0);opacity:0} 30%{background:rgba(46,204,113,0.12);opacity:1} 100%{background:rgba(46,204,113,0);opacity:0} }
+@keyframes flashR { 0%{background:rgba(231,76,60,0);opacity:0} 30%{background:rgba(231,76,60,0.12);opacity:1} 100%{background:rgba(231,76,60,0);opacity:0} }
+
+#big-flash {
+position: fixed;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(2.2rem, 8vw, 4rem);
+font-weight: 900;
+pointer-events: none;
+z-index: 600;
+opacity: 0;
+}
+#big-flash.pop { animation: bigPop 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+@keyframes bigPop { 0%{transform:translate(-50%,-50%) scale(0.3);opacity:0} 25%{transform:translate(-50%,-50%) scale(1.2);opacity:1} 70%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(-50%,-50%) scale(1.1);opacity:0} }
+
+.chapter-reveal {
+position: fixed;
+top: 50%; left: 50%;
+transform: translate(-50%, -50%);
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(1.3rem, 4vw, 2.4rem);
+font-weight: 900;
+color: var(–gold);
+text-shadow: 0 0 40px var(–gold-glow);
+pointer-events: none;
+z-index: 250;
+text-align: center;
+opacity: 0;
+padding: 16px 28px;
+background: rgba(0,0,0,0.6);
+border: 1px solid var(–border-bright);
+border-radius: 12px;
+backdrop-filter: blur(12px);
+}
+.chapter-reveal.run { animation: chReveal 2.8s ease forwards; }
+@keyframes chReveal { 0%{opacity:0;transform:translate(-50%,-55%) scale(0.85)} 15%{opacity:1;transform:translate(-50%,-50%) scale(1)} 70%{opacity:1} 100%{opacity:0;transform:translate(-50%,-45%) scale(1.05)} }
+
+.toast {
+position: fixed;
+bottom: 90px; left: 50%; transform: translateX(-50%);
+background: rgba(19,19,42,0.95);
+border: 1px solid var(–border-bright);
+border-radius: 20px;
+padding: 8px 18px;
+font-size: 0.78rem; font-weight: 700;
+color: var(–gold);
+pointer-events: none;
+z-index: 350;
+animation: toastAnim 3.5s ease forwards;
+white-space: nowrap;
+backdrop-filter: blur(8px);
+box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+@keyframes toastAnim { 0%{opacity:0;transform:translateX(-50%) translateY(8px)} 15%{opacity:1;transform:translateX(-50%) translateY(0)} 75%{opacity:1} 100%{opacity:0} }
+
+/* ══════════════════════════════
+RESPONSIVE
+══════════════════════════════ */
+@media (max-width: 360px) {
+.card { width: 78px; height: 120px; }
+.card-icon { font-size: 1.4rem; }
+.fighter-sprite { font-size: 3.2rem; }
+}
+
+@media (min-height: 750px) {
+.battle-arena { height: 210px; }
+.fighter-sprite { font-size: clamp(4rem, 12vw, 6rem); }
+}
+
+/* ══════════════════════════════
+MISC
+══════════════════════════════ */
+.gold { color: var(–gold); font-weight: 800; }
+.sep { height: 1px; background: var(–border); margin: 8px 0; }
+
+.progress-bar-enemy {
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: rgba(255,0,0,0.3);
+border-radius: 12px 12px 0 0;
+}
+.progress-bar-enemy-fill {
+height: 100%;
+background: var(–crimson);
+border-radius: inherit;
+transition: width 0.5s ease;
+}
+</style>
+
+</head>
+<body>
+
+<canvas id="vfx"></canvas>
+
+<div id="dmg-layer"></div>
+<div id="flash-overlay"></div>
+<div id="big-flash"></div>
+<div class="chapter-reveal" id="ch-reveal"></div>
+
+<!-- ═══════════════ TITLE ═══════════════ -->
+
+<div class="scr on" id="s-title">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px">
+    <div class="title-wrap">
+      <div class="title-logo">GRAMMATICA<br>SPIRE</div>
+      <div class="title-sub">Maître des Mots</div>
+      <div class="title-rune">⚔ ✦ ⚔</div>
+      <div class="title-tagline">Construis ton arsenal linguistique · Gravis la Flèche du Savoir</div>
+    </div>
+
+```
+<div class="title-menu">
+  <button class="btn btn-gold" onclick="startNewGame()">⚔️&nbsp;&nbsp;Commencer l'aventure</button>
+  <button class="btn btn-outline" onclick="openLesson('intro')">📚&nbsp;&nbsp;Leçons de grammaire</button>
+  <button class="btn btn-outline" onclick="openDeckView(true)">🃏&nbsp;&nbsp;Mon grimoire</button>
+</div>
+
+<div class="title-footer">
+  <span class="badge-alloprof">📖 AlloProf · PFEQ Secondaire 3</span>
+  <div style="font-size:0.65rem;color:var(--text-dim);text-align:center;margin-top:4px">
+    Homophones · Subjonctif · Connecteurs logiques · Texte explicatif · Grammaire
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ═══════════════ MAP ═══════════════ -->
+
+<div class="scr" id="s-map">
+  <div class="map-topbar">
+    <div class="map-chapter-info">
+      <div class="map-chapter-name" id="map-ch-name">Chapitre I</div>
+      <div class="chapter-dots" id="ch-dots"></div>
+    </div>
+    <div class="map-stats-row">
+      <div class="stat-chip">
+        <span class="chip-icon">❤️</span>
+        <span id="map-hp">80</span>/<span id="map-maxhp">80</span>
+      </div>
+      <div class="stat-chip">
+        <span class="chip-icon">🪙</span>
+        <span id="map-gold">0</span>
+      </div>
+      <div class="stat-chip clickable" onclick="openDeckView(false)">
+        <span class="chip-icon">🃏</span>
+        <span id="map-deckct">10</span>
+      </div>
+    </div>
+  </div>
+  <div class="map-body" id="map-body"></div>
+  <div style="text-align:center;padding:0 16px 10px">
+    <button class="btn btn-ghost" onclick="openLesson('intro')">📖 Revoir les leçons</button>
+  </div>
+</div>
+
+<!-- ═══════════════ BATTLE ═══════════════ -->
+
+<div class="scr" id="s-battle">
+  <div class="battle-bg"></div>
+
+  <!-- Top bar -->
+
+  <div class="battle-layer" style="display:flex;justify-content:center">
+    <div class="battle-topbar">
+      <!-- Player -->
+      <div class="combatant-block">
+        <div class="comb-header">
+          <span style="font-size:1.1rem">🧙</span>
+          <span class="comb-name" id="bt-pname">Héros</span>
+        </div>
+        <div class="status-row" id="bt-pstatus"></div>
+        <div class="hpbar-track" style="margin-top:4px">
+          <div class="hpbar-fill player-fill" id="bt-phpbar" style="width:100%"></div>
+        </div>
+        <div class="hpbar-text">
+          <span id="bt-php">80</span>/<span id="bt-pmaxhp">80</span> PV
+          <span id="bt-pshield-text" style="color:var(--blue);display:none">🛡 <span id="bt-pshieldv">0</span></span>
+        </div>
+      </div>
+
+```
+  <!-- Mid -->
+  <div class="turn-mid">
+    <div class="turn-num" id="bt-turn">Tour 1</div>
+    <div class="turn-vs">VS</div>
+    <div style="font-size:0.68rem;color:var(--text-dim)">🔥<span id="bt-streak">0</span></div>
+  </div>
+
+  <!-- Enemy -->
+  <div class="combatant-block" style="align-items:flex-end">
+    <div class="comb-header" style="justify-content:flex-end">
+      <span class="comb-name enemy-name" id="bt-ename">Ennemi</span>
+      <span id="bt-eicon" style="font-size:1.1rem">👹</span>
+    </div>
+    <div class="status-row" id="bt-estatus" style="justify-content:flex-end"></div>
+    <div class="hpbar-track" style="margin-top:4px">
+      <div class="hpbar-fill enemy-fill" id="bt-ehpbar" style="width:100%"></div>
+    </div>
+    <div class="hpbar-text" style="flex-direction:row-reverse">
+      <span id="bt-ehp">50</span>/<span id="bt-emaxhp">50</span> PV
+      <span id="bt-eshield-text" style="color:var(--blue);display:none">🛡 <span id="bt-eshieldv">0</span></span>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Arena -->
+
+  <div class="battle-layer" style="display:flex;justify-content:center">
+    <div class="battle-arena">
+      <div class="fighter-area">
+        <div class="fighter-sprite player-sprite" id="bt-psprite">🧙</div>
+        <div class="shield-badge" id="bt-pshieldbadge" style="display:none">🛡 <span id="bt-pshieldv2">0</span></div>
+      </div>
+      <div class="fighter-area" style="align-items:flex-end">
+        <div class="enemy-intent" id="bt-intent">
+          <div class="intent-label">Intention</div>
+          <div class="intent-val" id="bt-intent-val">⚔️ Attaque</div>
+          <div class="intent-debuff" id="bt-intent-debuff" style="display:none"></div>
+        </div>
+        <div class="fighter-sprite enemy-sprite" id="bt-esprite">👹</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question panel -->
+
+  <div class="battle-layer" style="display:flex;justify-content:center">
+    <div class="question-panel">
+      <div class="q-badge-row">
+        <span class="q-badge qb-homophone" id="bt-qbadge">HOMOPHONE</span>
+        <div class="q-streak" id="bt-streakbadge" style="display:none">🔥 <span id="bt-streakn">0</span> série</div>
+      </div>
+      <div class="q-text" id="bt-qtext">Joue une carte pour répondre à une question!</div>
+    </div>
+  </div>
+
+  <!-- Hand -->
+
+  <div class="battle-layer" style="display:flex;justify-content:center;flex:1;min-height:0">
+    <div class="hand-area">
+      <div class="hand-meta">
+        <div class="mana-bar">
+          <div class="mana-gems" id="bt-mana-gems"></div>
+          <span class="mana-label" id="bt-mana-label">3/3</span>
+        </div>
+        <div class="hand-right">
+          <span class="draw-info">Pioche: <span id="bt-drawct">0</span> · Défausse: <span id="bt-discardct">0</span></span>
+          <button class="end-btn" onclick="endTurn()">Fin du tour ↩</button>
+        </div>
+      </div>
+      <div class="cards-scroll" id="bt-hand"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CHOICES MODAL ═══════════════ -->
+
+<div class="modal-bg" id="modal-choices">
+  <div class="choices-modal">
+    <div class="modal-header">
+      <div class="modal-card-icon" id="mc-icon">⚡</div>
+      <div>
+        <div class="modal-title" id="mc-title">Carte</div>
+        <div class="modal-subtitle" id="mc-subtitle">Répondez correctement pour activer la carte</div>
+      </div>
+    </div>
+    <div class="modal-question" id="mc-question">Question...</div>
+    <div class="choices-grid" id="mc-grid"></div>
+    <div class="hint-box" id="mc-hint"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="openLessonFromModal()" id="mc-lesson-btn" data-lesson="homophones">💡 Voir la leçon</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ REWARD ═══════════════ -->
+
+<div class="scr" id="s-reward">
+  <div class="reward-header">
+    <div class="reward-title" id="rw-title">🏆 Victoire!</div>
+    <div class="reward-subtitle" id="rw-sub">Choisis une carte à ajouter à ton grimoire</div>
+  </div>
+  <div class="reward-picks" id="rw-picks"></div>
+  <div class="reward-gold-line" id="rw-gold">🪙 +0 or gagné</div>
+  <div style="display:flex;flex-direction:column;gap:10px;width:min(320px,90vw)">
+    <button class="btn btn-outline" onclick="skipReward()">Ignorer la récompense</button>
+    <button class="btn btn-gold" onclick="returnToMap()">Retour à la carte 🗺</button>
+  </div>
+</div>
+
+<!-- ═══════════════ SHOP ═══════════════ -->
+
+<div class="scr" id="s-shop">
+  <div class="shop-topbar">
+    <div>
+      <div class="shop-title">📚 Bibliothèque Arcanique</div>
+      <div class="shop-sub">Échangez votre or contre des sorts puissants</div>
+    </div>
+    <div class="stat-chip"><span class="chip-icon">🪙</span> <span id="sh-gold">0</span></div>
+  </div>
+  <div class="shop-grid" id="sh-grid"></div>
+  <div class="shop-remove-section" id="sh-remove" style="display:none">
+    <div class="shop-remove-title">🗑 Retirer une carte (affaiblir votre deck)</div>
+    <div id="sh-remove-list"></div>
+  </div>
+  <div style="margin-top:20px;text-align:center">
+    <button class="btn btn-gold" onclick="leaveShop()">Quitter la bibliothèque →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ DECK ═══════════════ -->
+
+<div class="scr" id="s-deck">
+  <div class="deck-topbar">
+    <div class="deck-title">🃏 Mon Grimoire (<span id="dk-count">10</span> cartes)</div>
+    <button class="btn btn-ghost" onclick="closeDeckView()">✕ Fermer</button>
+  </div>
+  <div class="deck-grid" id="dk-grid"></div>
+</div>
+
+<!-- ═══════════════ GAME OVER ═══════════════ -->
+
+<div class="scr" id="s-over">
+  <div class="over-title" id="ov-title">📖 La Leçon Continue...</div>
+  <div class="end-msg" id="ov-msg">Les mots ont le pouvoir de nous relever. Tente à nouveau!</div>
+  <div class="stats-box" id="ov-stats"></div>
+  <div style="display:flex;flex-direction:column;gap:10px;width:min(300px,90vw)">
+    <button class="btn btn-gold" onclick="startNewGame()">🔄 Recommencer</button>
+    <button class="btn btn-outline" onclick="show('s-title')">⬅ Menu principal</button>
+  </div>
+</div>
+
+<!-- ═══════════════ WIN ═══════════════ -->
+
+<div class="scr" id="s-win">
+  <div class="win-title">MAÎTRE DES MOTS 🎓</div>
+  <div style="font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);letter-spacing:4px;text-align:center;margin:8px 0">LA FLÈCHE EST GRAVIE!</div>
+  <div style="font-size:3.5rem;margin:12px 0;animation:floatY 2s ease-in-out infinite">🎓</div>
+  <div class="end-msg">Tu as maîtrisé le texte explicatif, les homophones, les connecteurs logiques et le subjonctif. La langue française n'a plus de secrets pour toi!</div>
+  <div class="stats-box" id="win-stats"></div>
+  <div style="display:flex;flex-direction:column;gap:10px;width:min(300px,90vw)">
+    <button class="btn btn-gold" onclick="startNewGame()">🔄 Nouvelle partie</button>
+    <button class="btn btn-outline" onclick="show('s-title')">⬅ Menu</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LESSON MODAL ═══════════════ -->
+
+<div id="lesson-bg">
+  <div class="lesson-modal" id="lesson-modal">
+    <div class="lesson-header">
+      <div>
+        <div class="lesson-title" id="ls-title">Leçon</div>
+        <div class="lesson-subtitle" id="ls-sub"></div>
+      </div>
+      <button class="btn btn-ghost" onclick="closeLesson()">✕</button>
+    </div>
+    <div id="ls-body"></div>
+    <div class="lesson-alloprof">
+      <span class="badge-alloprof">📖 AlloProf</span>
+      <span>alloprof.qc.ca · Contenu validé PFEQ Sec. 3</span>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════
+//  VFX — PARTICLE CANVAS
+// ═══════════════════════════════════════════════════════
+const cv = document.getElementById('vfx');
+const cx = cv.getContext('2d');
+let W = 0, H = 0;
+const pts = [];
+
+function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+for (let i = 0; i < 90; i++) pts.push({
+  x: Math.random() * innerWidth,
+  y: Math.random() * innerHeight,
+  r: Math.random() * 1.4 + 0.3,
+  v: Math.random() * 0.25 + 0.06,
+  d: (Math.random() - 0.5) * 0.15,
+  o: Math.random() * 0.45 + 0.08,
+  c: Math.random() > 0.7 ? '#5badec' : '#e8c56a'
+});
+
+(function animPts() {
+  cx.clearRect(0, 0, W, H);
+  for (const p of pts) {
+    cx.beginPath();
+    cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    cx.fillStyle = p.c.replace(')', `,${p.o})`).replace('rgb', 'rgba');
+    cx.fill();
+    p.y -= p.v; p.x += p.d;
+    if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; }
+    if (p.x < -4 || p.x > W + 4) p.x = Math.random() * W;
+  }
+  requestAnimationFrame(animPts);
+})();
+
+// ═══════════════════════════════════════════════════════
+//  LESSONS DATA
+// ═══════════════════════════════════════════════════════
+const LESSONS = {
+  intro: {
+    t: 'Grammatica Spire — Guide', s: 'Maîtrise la langue française en combattant!',
+    secs: [
+      { h: '🎮 Comment jouer', c: '<ul><li>Appuie sur une <b>carte</b> dans ta main pour la jouer</li><li>Réponds correctement à la <b>question</b> → effet complet</li><li>Mauvaise réponse → effet réduit + astuce affichée</li><li>Fin de ton tour → l\'ennemi attaque!</li><li>Construis ton deck en choisissant des <b>cartes récompense</b></li></ul>' },
+      { h: '🗺 Types de nœuds', c: '<ul><li>⚔️ <b>Combat</b> : Bataille standard → carte récompense</li><li>💜 <b>Élite</b> : Ennemi fort → meilleure récompense</li><li>🐉 <b>Boss</b> : Patron du chapitre → choisir 2 cartes!</li><li>🌿 <b>Repos</b> : Récupère 30% de tes PV</li><li>📚 <b>Bibliothèque</b> : Achète des cartes ou retire des cartes</li><li>🌀 <b>Mystère</b> : Événement aléatoire</li></ul>' },
+      { h: '📚 Matières du curriculum', c: '<ul><li>🔤 <b>Homophones</b> : a/à, on/ont, ou/où, ses/ces…</li><li>🌙 <b>Subjonctif</b> : il faut que, bien que, vouloir que…</li><li>⛓ <b>Connecteurs logiques</b> : cause, conséquence, opposition…</li><li>📝 <b>Texte explicatif</b> : structure CIDRE, registre neutre…</li><li>📖 <b>Grammaire</b> : GN, GV, participe passé, relatives…</li></ul>' },
+      { h: '💡 Astuce série', c: '<p>Enchaîne les bonnes réponses pour construire une <span class="ex">série de feu 🔥</span>! Chaque bonne réponse consécutive augmente une prime de dégâts.</p>' }
+    ]
+  },
+  homophone: {
+    t: 'Les Homophones Grammaticaux', s: 'Des sons identiques, des sens très différents',
+    secs: [
+      { h: 'a / à', c: '<ul><li><b>a</b> = verbe <i>avoir</i> conjugué → remplaçable par <span class="ex">avait</span> : <span class="ex">Elle a mangé.</span></li><li><b>à</b> = préposition (lieu, but, moyen) : <span class="ex">Je vais à l\'école.</span></li></ul><p style="margin-top:6px;font-size:0.75rem;color:#8a7f6e">Test : remplace par «avait» → si ça marche → <b>a</b></p>' },
+      { h: 'on / ont', c: '<ul><li><b>on</b> = pronom sujet (= il) : <span class="ex">On mange.</span></li><li><b>ont</b> = verbe <i>avoir</i> conjugué (= avaient) : <span class="ex">Ils ont mangé.</span></li></ul>' },
+      { h: 'est / et', c: '<ul><li><b>est</b> = verbe <i>être</i> conjugué (= était) : <span class="ex">Elle est partie.</span></li><li><b>et</b> = conjonction de coordination (= et puis) : <span class="ex">pain et beurre</span></li></ul>' },
+      { h: 'ses / ces / s\'est / c\'est / sais / sait', c: '<ul><li><b>ses</b> = dét. possessif (les siens) : <span class="ex">ses amis</span></li><li><b>ces</b> = dét. démonstratif (= ceux-là) : <span class="ex">ces livres</span></li><li><b>s\'est</b> = pronom réfl. + avoir : <span class="ex">Il s\'est levé.</span></li><li><b>c\'est</b> = présentatif : <span class="ex">C\'est beau.</span></li><li><b>sais / sait</b> = verbe <i>savoir</i> : <span class="ex">Je sais. Il sait.</span></li></ul>' },
+      { h: 'ou / où', c: '<ul><li><b>ou</b> = conjonction (= ou bien) : <span class="ex">café ou thé</span></li><li><b>où</b> = pronom/adverbe relatif (lieu, temps) : <span class="ex">la ville où je vis</span></li></ul>' },
+      { h: 'mais / mes / met / mets', c: '<ul><li><b>mais</b> = conjonction d\'opposition : <span class="ex">mais non!</span></li><li><b>mes</b> = dét. possessif 1re pers. : <span class="ex">mes amis</span></li><li><b>met / mets</b> = verbe <i>mettre</i> : <span class="ex">Il met son manteau.</span></li></ul>' },
+      { h: 'leur / leurs', c: '<ul><li><b>leur</b> (sing.) = pronom COI ou dét. pluriel invariable devant un verbe : <span class="ex">Je leur parle.</span></li><li><b>leurs</b> (plur.) = dét. possessif devant un nom : <span class="ex">leurs livres</span></li></ul>' },
+      { h: 'si / s\'y', c: '<ul><li><b>si</b> = conjonction de condition ou d\'interrogation : <span class="ex">Si tu viens…</span></li><li><b>s\'y</b> = pronom réfl. + y : <span class="ex">Il s\'y habitue.</span></li></ul>' }
+    ]
+  },
+  connecteur: {
+    t: 'Les Connecteurs Logiques', s: 'Les mots qui tissent la cohérence du texte',
+    secs: [
+      { h: '🎯 Cause', c: '<p>Indiquent la raison :</p><p class="ex" style="margin-top:4px">parce que · car · puisque · étant donné que · vu que · en raison de · grâce à · à cause de</p>' },
+      { h: '💥 Conséquence', c: '<p>Indiquent l\'effet :</p><p class="ex" style="margin-top:4px">donc · ainsi · par conséquent · c\'est pourquoi · de sorte que · si bien que · en conséquence · d\'où</p>' },
+      { h: '⚡ Opposition / Concession', c: '<p>Marquent un contraste :</p><p class="ex" style="margin-top:4px">mais · cependant · toutefois · néanmoins · pourtant · or · bien que (+ subj.) · même si · quoique</p>' },
+      { h: '➕ Addition / Explication', c: '<p>Ajoutent ou précisent :</p><p class="ex" style="margin-top:4px">de plus · en outre · également · de surcroît · par ailleurs · aussi · en effet · c\'est-à-dire</p>' },
+      { h: '📋 Ordre / Énumération', c: '<p>Organisent les idées :</p><p class="ex" style="margin-top:4px">d\'abord · ensuite · puis · enfin · premièrement · deuxièmement · finalement · d\'une part · d\'autre part</p>' },
+      { h: '🔀 But', c: '<p>Expriment l\'objectif :</p><p class="ex" style="margin-top:4px">pour que · afin que · dans le but de · pour · afin de</p>' }
+    ]
+  },
+  subjonctif: {
+    t: 'Le Mode Subjonctif', s: 'L\'expression du doute, du souhait, de la nécessité',
+    secs: [
+      { h: '🌙 Déclencheurs du subjonctif', c: '<ul><li><b>Nécessité</b> : <span class="ex">il faut que · il est nécessaire que</span></li><li><b>Volonté/désir</b> : <span class="ex">vouloir que · souhaiter que · désirer que</span></li><li><b>Sentiment</b> : <span class="ex">être content que · craindre que · regretter que</span></li><li><b>Doute/possibilité</b> : <span class="ex">douter que · il est possible que</span></li><li><b>Conjonctions</b> : <span class="ex">bien que · quoique · pour que · afin que · à moins que</span></li></ul>' },
+      { h: '📐 Formation régulière', c: '<p>Radical 3e pers. pluriel indicatif + terminaisons <span class="ex">-e -es -e -ions -iez -ent</span></p><p style="margin-top:6px"><span class="ex">finir → ils finissent → que je finisse</span></p><p><span class="ex">parler → ils parlent → que je parle</span></p>' },
+      { h: '⚠️ Verbes irréguliers', c: '<ul><li><b>être</b> : <span class="ex">que je sois · que tu sois · qu\'il soit · que nous soyons</span></li><li><b>avoir</b> : <span class="ex">que j\'aie · que tu aies · qu\'il ait · que nous ayons</span></li><li><b>aller</b> : <span class="ex">que j\'aille · que nous allions</span></li><li><b>faire</b> : <span class="ex">que je fasse · que nous fassions</span></li><li><b>pouvoir</b> : <span class="ex">que je puisse · que nous puissions</span></li><li><b>savoir</b> : <span class="ex">que je sache · que nous sachions</span></li><li><b>vouloir</b> : <span class="ex">que je veuille · que nous voulions</span></li></ul>' },
+      { h: '✅ Indicatif vs Subjonctif', c: '<ul><li><span class="ex">Je sais qu\'il <b>vient</b>.</span> (certitude → indicatif)</li><li><span class="ex">Je doute qu\'il <b>vienne</b>.</span> (doute → subjonctif)</li><li><span class="ex">Je pense qu\'il <b>est</b> là.</span> (affirmatif → indicatif)</li><li><span class="ex">Je ne pense pas qu\'il <b>soit</b> là.</span> (négatif → subjonctif)</li></ul>' }
+    ]
+  },
+  explicatif: {
+    t: 'Le Texte Explicatif', s: 'Expliquer un phénomène de façon claire et objective',
+    secs: [
+      { h: '📋 Structure en 3 parties', c: '<ul><li><b>Introduction</b> : sujet amené → sujet posé → sujet divisé</li><li><b>Développement</b> : les phases explicatives (séquences)</li><li><b>Conclusion</b> : synthèse + ouverture ou perspective</li></ul>' },
+      { h: '🔑 Procédés CIDRE', c: '<ul><li><b>C</b> — Comparaison : <span class="ex">comme · tel que · ainsi que · de même que</span></li><li><b>I</b> — Illustration : <span class="ex">par exemple · notamment · entre autres · comme c\'est le cas de</span></li><li><b>D</b> — Définition : <span class="ex">est · signifie · désigne · c\'est-à-dire · se définit comme</span></li><li><b>R</b> — Reformulation : <span class="ex">autrement dit · en d\'autres termes · soit</span></li><li><b>E</b> — Énumération : <span class="ex">premièrement · d\'abord · ensuite · enfin · d\'une part · d\'autre part</span></li></ul>' },
+      { h: '✅ Registre neutre et objectif', c: '<ul><li>❌ <span class="ex">Je pense que…</span> (subjectif → à éviter)</li><li>✅ <span class="ex">Les scientifiques ont démontré que…</span> (objectif)</li><li>Préférer la 3e personne</li><li>Vocabulaire précis et technique</li><li>Pas d\'exclamation ni d\'émotion</li></ul>' },
+      { h: '📌 Le sujet divisé', c: '<p>Annonce les parties du développement :</p><p class="ex" style="margin-top:4px">«Nous verrons d\'abord les causes, puis les effets, et finalement les solutions.»</p>' }
+    ]
+  },
+  grammaire: {
+    t: 'Grammaire de la Phrase', s: 'Les structures fondamentales de la langue',
+    secs: [
+      { h: '📦 Groupes syntaxiques', c: '<ul><li><b>GN</b> (Groupe Nominal) : dét. + nom (+ expansions) : <span class="ex">le grand chien noir</span></li><li><b>GV</b> (Groupe Verbal) : verbe (+ compléments) : <span class="ex">mange rapidement une pomme</span></li><li><b>GPrép</b> : prép. + GN : <span class="ex">dans la forêt enchantée</span></li><li><b>GAdj</b> : adjectif (+ compléments) : <span class="ex">très fatigué de courir</span></li></ul>' },
+      { h: '✍️ Accord du participe passé', c: '<ul><li>Avec <b>être</b> → accord avec le <b>sujet</b> : <span class="ex">Elle est partie tôt.</span></li><li>Avec <b>avoir</b> → accord avec le <b>COD placé avant</b> : <span class="ex">Les livres qu\'il a lus sont ici.</span></li><li>Sans COD avant → invariable : <span class="ex">Elle a mangé.</span></li></ul>' },
+      { h: '🔤 Pronoms relatifs', c: '<ul><li><b>qui</b> = sujet : <span class="ex">le chat qui dort</span></li><li><b>que</b> = COD : <span class="ex">le livre que je lis</span></li><li><b>dont</b> = compl. du nom ou du verbe : <span class="ex">l\'ami dont je parle</span></li><li><b>où</b> = lieu ou temps : <span class="ex">le jour où il est né</span></li><li><b>lequel / laquelle…</b> = après préposition : <span class="ex">l\'outil avec lequel il travaille</span></li></ul>' },
+      { h: '🔡 Fonctions syntaxiques', c: '<ul><li><b>Sujet</b> : fait l\'action ou est caractérisé : <span class="ex">Le chat dort.</span></li><li><b>COD</b> : complète le verbe sans prép. : <span class="ex">Je mange une pomme.</span></li><li><b>COI</b> : complète avec prép. : <span class="ex">Je parle à mon ami.</span></li><li><b>Attribut du sujet</b> : après verbe d\'état : <span class="ex">Il est médecin.</span></li></ul>' }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+//  QUESTIONS BANK — DOUBLED (30+ per category)
+// ═══════════════════════════════════════════════════════
+const Q = {
+  homophone: [
+    // Original batch
+    {q:"Le chien ___ son os dans le jardin.", o:["a","à"], a:0, h:"Remplace par 'avait' → 'avait son os' ✓ → verbe avoir", l:"homophone"},
+    {q:"Elle ___ allée au cinéma avec ses amis.", o:["est","et"], a:0, h:"Verbe être conjugué (auxiliaire) → remplaçable par 'était'", l:"homophone"},
+    {q:"Je ne sais pas ___ il viendra.", o:["si","s'y"], a:0, h:"'si' = conjonction de condition; 's'y' = pronom+y", l:"homophone"},
+    {q:"Ces livres ___ dans la bibliothèque.", o:["sont","son"], a:0, h:"'sont' = verbe être → remplace par 'étaient' ✓", l:"homophone"},
+    {q:"___ enfants jouent dans la cour.", o:["Ces","Ses","C'est"], a:0, h:"Démonstratif = CES (= ceux-là); possessif = SES (les siens)", l:"homophone"},
+    {q:"Il ___ beaucoup d'amis fidèles.", o:["a","à"], a:0, h:"Remplace par 'avait' → 'avait beaucoup d'amis' ✓", l:"homophone"},
+    {q:"Tu veux du café ___ du thé?", o:["ou","où"], a:0, h:"'ou' = conjonction (= ou bien). 'où' = lieu/temps", l:"homophone"},
+    {q:"La ville ___ je suis né est magnifique.", o:["où","ou"], a:0, h:"'où' = pronom relatif de lieu/temps", l:"homophone"},
+    {q:"Ils ___ terminé leurs devoirs.", o:["ont","on"], a:0, h:"Remplace par 'avaient' → 'avaient terminé' ✓", l:"homophone"},
+    {q:"___ mange une pomme chaque jour.", o:["On","Ont"], a:0, h:"'On' = pronom sujet (= il/elle)", l:"homophone"},
+    {q:"Je ___ pas pourquoi il est fâché.", o:["ne sais","ne sait"], a:0, h:"Sujet = 'Je' → 1re pers. sing. → 'sais'", l:"homophone"},
+    {q:"___ idée brillante tu as eu!", o:["Quelle","Qu'elle"], a:0, h:"Exclamatif + nom féminin → 'Quelle idée'", l:"homophone"},
+    // New batch
+    {q:"Papa ___ maman sont au marché.", o:["et","est"], a:0, h:"'et' = conjonction de coordination (= et puis)", l:"homophone"},
+    {q:"Il ___ fatigué après la course.", o:["est","et"], a:0, h:"Remplace par 'était' → 'était fatigué' ✓ → verbe être", l:"homophone"},
+    {q:"___ livres sont sur la table.", o:["Ses","Ces","C'est"], a:1, h:"Démonstratif = CES (= ces livres-là); possessif = SES (les siens)", l:"homophone"},
+    {q:"Il ___ brossé les dents ce matin.", o:["s'est","c'est","sait"], a:0, h:"S'EST = pronom réfl. + auxiliaire être (il s'est levé)", l:"homophone"},
+    {q:"___ difficile d'apprendre sans pratiquer.", o:["C'est","S'est","Sait"], a:0, h:"C'EST = présentatif (= cela est)", l:"homophone"},
+    {q:"Elle ___ lever tôt chaque matin.", o:["sait","s'est","c'est"], a:0, h:"SAIT = verbe savoir conjugué (elle sait faire)", l:"homophone"},
+    {q:"Je dois parler ___ directeur.", o:["au","à l'","aux"], a:1, h:"'directeur' est masculin singulier → 'au' semble juste MAIS ici c'est 'au directeur' → 'au'", l:"homophone"},
+    {q:"___ gentil, ce professeur!", o:["Quel","Quelle","Qu'elle"], a:0, h:"QUEL → masculin singulier + adjectif attribut", l:"homophone"},
+    {q:"Les enfants ont mangé ___ gâteau.", o:["leur","leurs"], a:0, h:"'leur gâteau' = dét. possessif accordé au nom (1 gâteau → leur)", l:"homophone"},
+    {q:"Je ___ parlé hier soir.", o:["lui ai","l'ai","lui est"], a:0, h:"LUI AI = pronom COI + verbe avoir conjugué", l:"homophone"},
+    {q:"Nous allons ___ vacances en juillet.", o:["en","dans","à"], a:0, h:"'en vacances' = locution; devant pays féminin aussi", l:"homophone"},
+    {q:"___ tu pars en voyage?", o:["Quand","Qu'en","Quant"], a:0, h:"QUAND = adverbe interrogatif de temps", l:"homophone"},
+    {q:"Elle a ___ trois pommes.", o:["mangé","mangés","mangées"], a:0, h:"Avec AVOIR, le participe s'accorde avec le COD AVANT le verbe → ici le COD est après → invariable", l:"homophone"},
+    {q:"___ les élèves ont réussi l'examen.", o:["Tous","Tout"], a:0, h:"TOUS = pronom/dét. au masculin pluriel devant nom pluriel", l:"homophone"},
+    {q:"Il travaille ___ qu'il ne dort.", o:["plus","peu"], a:0, h:"PLUS que = comparaison de supériorité", l:"homophone"},
+    {q:"Tu te souviens du jour ___ on s'est rencontrés?", o:["où","ou"], a:0, h:"OÙ = pronom relatif de temps (le jour où)", l:"homophone"},
+    {q:"___ avons beaucoup appris cette année.", o:["Nous","On"], a:0, h:"NOUS = pronom personnel sujet 1re pers. pl. (accord du verbe)", l:"homophone"},
+    {q:"Marie ___ Pierre viendront à la fête.", o:["et","est"], a:0, h:"ET = conjonction de coordination qui relie deux sujets", l:"homophone"},
+  ],
+
+  connecteur: [
+    // Original
+    {q:"Il fait froid, ___ je porte un manteau.", o:["donc","mais","cependant"], a:0, h:"'donc' exprime la conséquence logique", l:"connecteur"},
+    {q:"Elle est fatiguée, ___ elle continue de travailler.", o:["pourtant","donc","car"], a:0, h:"'pourtant' marque une opposition/concession", l:"connecteur"},
+    {q:"___ il pleut dehors, restons à l'intérieur.", o:["Puisque","Cependant","Enfin"], a:0, h:"'Puisque' introduit une cause évidente/acceptée", l:"connecteur"},
+    {q:"Il travaille dur ___ il réussit.", o:["c'est pourquoi","mais","bien que"], a:0, h:"'c'est pourquoi' = conséquence (remplace 'donc' en début de prop.)", l:"connecteur"},
+    {q:"J'aime la lecture. ___, j'adore les jeux vidéo.", o:["De plus","Cependant","Donc"], a:0, h:"'De plus' ajoute une information complémentaire", l:"connecteur"},
+    {q:"___ le brouillard, le conducteur roulait lentement.", o:["En raison de","Cependant","Enfin"], a:0, h:"'En raison de' + GN introduit une cause nominale", l:"connecteur"},
+    {q:"Le projet est difficile. ___, nous allons réussir.", o:["Néanmoins","Car","Ainsi"], a:0, h:"'Néanmoins' = opposition/concession (comme 'cependant')", l:"connecteur"},
+    {q:"___, il faut analyser le problème.", o:["D'abord","Donc","Pourtant"], a:0, h:"'D'abord' = premier élément dans une énumération", l:"connecteur"},
+    {q:"Il a étudié, ___ il a réussi son examen.", o:["si bien que","bien que","cependant"], a:0, h:"'si bien que' = conséquence intensive (intensité de la cause)", l:"connecteur"},
+    {q:"Je l'aime ___ il soit parfois irritant.", o:["bien que","parce que","donc"], a:0, h:"'bien que' + subjonctif = concession (j'admet un fait contraire)", l:"connecteur"},
+    // New batch
+    {q:"Il mange peu ___ il fait beaucoup de sport.", o:["et pourtant","donc","car"], a:0, h:"'Et pourtant' = opposition/concession (surprise)", l:"connecteur"},
+    {q:"Elle a échoué ___ elle avait peu étudié.", o:["parce que","bien que","cependant"], a:0, h:"'parce que' = cause directe", l:"connecteur"},
+    {q:"___, préparons nos affaires avant de partir.", o:["D'abord","Pourtant","Néanmoins"], a:0, h:"D'abord = début d'une liste d'étapes", l:"connecteur"},
+    {q:"Il est malade; ___, il viendra à l'école.", o:["toutefois","car","donc"], a:0, h:"'Toutefois' = opposition (syn. de cependant, néanmoins)", l:"connecteur"},
+    {q:"___ comprendre un texte, il faut lire attentivement.", o:["Afin de","Car","Pourtant"], a:0, h:"'Afin de' + infinitif = but/objectif", l:"connecteur"},
+    {q:"Le ciel est gris. ___, il pleuvra bientôt.", o:["En conséquence","Bien que","D'abord"], a:0, h:"'En conséquence' = conséquence logique (syn. donc, ainsi)", l:"connecteur"},
+    {q:"Il parle vite, ___ tout le monde comprend.", o:["pourtant","donc","ou"], a:0, h:"'pourtant' marque que c'est surprenant malgré la vitesse", l:"connecteur"},
+    {q:"Elle adore la musique. ___, elle déteste la danse.", o:["En revanche","En conséquence","De plus"], a:0, h:"'En revanche' = opposition (contraste direct)", l:"connecteur"},
+    {q:"___ il faisait chaud, nous avons mis la climatisation.", o:["Comme","Pourtant","Donc"], a:0, h:"'Comme' = cause (en début de phrase)", l:"connecteur"},
+    {q:"Je suis absent demain; ___, je ferai mes devoirs ce soir.", o:["c'est pourquoi","néanmoins","bien que"], a:0, h:"'c'est pourquoi' = conséquence qui motive une action", l:"connecteur"},
+    {q:"___ une part, il aime le sport. ___ autre part, il préfère lire.", o:["D'une / D'","De l' / De l'"], a:0, h:"'D'une part… d'autre part' = structure d'opposition structurée", l:"connecteur"},
+    {q:"La forêt brûle ___ la sécheresse est extrême.", o:["car","pourtant","enfin"], a:0, h:"'car' = cause (explique pourquoi)", l:"connecteur"},
+    {q:"Il a beau essayer, ___ il n'y arrive pas.", o:["il n'empêche que","donc","de plus"], a:0, h:"'Il a beau + inf.' exprime une concession; la conséquence suit avec 'il n'empêche que'", l:"connecteur"},
+    {q:"___ résumer, ce film est magnifique.", o:["Pour","Pourtant","Puisque"], a:0, h:"'Pour résumer' = reformulation/synthèse", l:"connecteur"},
+    {q:"Elle travaille dur. ___ elle mérite une pause.", o:["C'est pourquoi","Bien que","Toutefois"], a:0, h:"'C'est pourquoi' = conséquence logique → récompense méritée", l:"connecteur"},
+  ],
+
+  subjonctif: [
+    // Original
+    {q:"Il faut que tu ___ à l'heure.", o:["sois","es","soit"], a:0, h:"'il faut que' → subjonctif. Être → que tu SOIS", l:"subjonctif"},
+    {q:"Je veux qu'elle ___ avec nous.", o:["vienne","vient","viendra"], a:0, h:"Vouloir que + subjonctif. Venir → qu'elle VIENNE", l:"subjonctif"},
+    {q:"Bien qu'il ___ malade, il est venu.", o:["soit","est","était"], a:0, h:"'bien que' → subjonctif obligatoire. Être → qu'il SOIT", l:"subjonctif"},
+    {q:"Il est important que nous ___ ensemble.", o:["travaillions","travaillons","travaillerons"], a:0, h:"Subjonctif de travailler: que nous TRAVAILLIONS", l:"subjonctif"},
+    {q:"Je doute qu'il ___ la vérité.", o:["dise","dit","dira"], a:0, h:"Douter que + subjonctif. Dire → qu'il DISE", l:"subjonctif"},
+    {q:"Il faut que vous ___ votre travail.", o:["fassiez","faites","ferez"], a:0, h:"Subjonctif de faire: que vous FASSIEZ", l:"subjonctif"},
+    {q:"Quoiqu'il ___ riche, il vit simplement.", o:["soit","est","sera"], a:0, h:"'quoique' → subjonctif. Être → qu'il SOIT", l:"subjonctif"},
+    {q:"Je suis content que tu ___ là.", o:["sois","es","étais"], a:0, h:"Sentiment → subjonctif. Être → que tu SOIS", l:"subjonctif"},
+    {q:"Il faut que j'___ mes affaires.", o:["aie","ai","aurai"], a:0, h:"Subjonctif d'avoir: que j'AIE (pas d'accent!)", l:"subjonctif"},
+    {q:"Pour que le projet ___, nous devons collaborer.", o:["réussisse","réussit","réussira"], a:0, h:"'pour que' + subjonctif. Réussir → qu'il RÉUSSISSE", l:"subjonctif"},
+    // New
+    {q:"Il est possible qu'elle ___ demain.", o:["vienne","vient","viendra"], a:0, h:"'il est possible que' → subjonctif. Venir → qu'elle VIENNE", l:"subjonctif"},
+    {q:"Je regrette qu'il ne ___ pas venu.", o:["soit","est","était"], a:0, h:"Regretter que + subjonctif. Être (passé) → qu'il SOIT venu", l:"subjonctif"},
+    {q:"Bien que nous ___ fatigués, nous continuons.", o:["soyons","sommes","serons"], a:0, h:"'bien que' + subjonctif. Être → que nous SOYONS", l:"subjonctif"},
+    {q:"Il faut qu'il ___ ses devoirs.", o:["fasse","fait","fera"], a:0, h:"'il faut que' + subjonctif. Faire → qu'il FASSE", l:"subjonctif"},
+    {q:"Je cherche un ami qui ___ honnête.", o:["soit","est","sera"], a:0, h:"Relative avec valeur indéfinie → subjonctif. Être → qui SOIT", l:"subjonctif"},
+    {q:"À moins qu'elle ___ à l'heure, on part sans elle.", o:["arrive","arrivera","arrivait"], a:0, h:"'à moins que' → subjonctif. Arriver → qu'elle ARRIVE", l:"subjonctif"},
+    {q:"Bien qu'il ___ beaucoup de travail, il reste calme.", o:["ait","a","aura"], a:0, h:"'bien que' + subjonctif. Avoir → qu'il AIT", l:"subjonctif"},
+    {q:"Il est dommage que tu ne ___ pas là.", o:["sois","es","seras"], a:0, h:"'il est dommage que' → subjonctif. Être → que tu SOIS", l:"subjonctif"},
+    {q:"Je veux que tu ___ plus attention.", o:["fasses","fais","feras"], a:0, h:"Vouloir que + subjonctif. Faire → que tu FASSES attention", l:"subjonctif"},
+    {q:"Il faut que tu ___ plus de légumes.", o:["manges","mange","mangeras"], a:0, h:"'il faut que' + subjonctif. Manger → que tu MANGES (e final)", l:"subjonctif"},
+    {q:"Pour qu'il ___ réussir, il doit travailler.", o:["puisse","peut","pourra"], a:0, h:"'pour que' + subjonctif. Pouvoir → qu'il PUISSE", l:"subjonctif"},
+    {q:"Je souhaite qu'elle ___ guérir vite.", o:["puisse","peut","pourra"], a:0, h:"Souhaiter que + subjonctif. Pouvoir → qu'elle PUISSE", l:"subjonctif"},
+    {q:"Bien qu'il ___ tout fait, il reste insatisfait.", o:["ait","a","avait"], a:0, h:"'bien que' + subjonctif. Avoir → qu'il AIT (subj. passé)", l:"subjonctif"},
+    {q:"Il est essentiel que chacun ___ sa part.", o:["fasse","fait","fera"], a:0, h:"'il est essentiel que' → subjonctif. Faire → qu'il FASSE", l:"subjonctif"},
+    {q:"Je préfère qu'on ___ ce problème ensemble.", o:["règle","règlera","a réglé"], a:0, h:"Préférer que + subjonctif. Régler → qu'on RÈGLE", l:"subjonctif"},
+  ],
+
+  explicatif: [
+    // Original
+    {q:"Quel procédé CIDRE: 'La photosynthèse, c'est-à-dire le processus par lequel...'", o:["Définition","Comparaison","Illustration"], a:0, h:"'c'est-à-dire' = reformulation/définition → D de CIDRE", l:"explicatif"},
+    {q:"Quel procédé CIDRE: '...comme une immense bougie, le soleil...'", o:["Comparaison","Énumération","Reformulation"], a:0, h:"'comme' = comparaison → C de CIDRE", l:"explicatif"},
+    {q:"Quelle partie du texte explicatif introduit le sujet?", o:["L'introduction","Le développement","La conclusion"], a:0, h:"L'introduction = sujet amené, posé et divisé", l:"explicatif"},
+    {q:"'Premièrement... deuxièmement... enfin...' = quel procédé CIDRE?", o:["Énumération","Illustration","Définition"], a:0, h:"Lister des éléments ordonnés = Énumération → E de CIDRE", l:"explicatif"},
+    {q:"Le registre du texte explicatif est:", o:["Neutre et objectif","Familier","Poétique"], a:0, h:"Le texte explicatif doit être objectif: pas d'opinion personnelle", l:"explicatif"},
+    {q:"'Notamment, entre autres, par exemple' = quel procédé?", o:["Illustration","Comparaison","Énumération"], a:0, h:"Donner des exemples concrets = Illustration → I de CIDRE", l:"explicatif"},
+    {q:"Lequel est UN sujet divisé correctement?", o:["Nous verrons d'abord A, puis B, et enfin C.","Le sujet est intéressant.","Voici mon opinion."], a:0, h:"Le sujet divisé annonce les parties du développement", l:"explicatif"},
+    {q:"'Autrement dit, en d'autres termes' = quel procédé CIDRE?", o:["Reformulation","Définition","Illustration"], a:0, h:"Reprendre autrement une idée = Reformulation → R de CIDRE", l:"explicatif"},
+    // New
+    {q:"Le sujet POSÉ dans l'introduction sert à:", o:["Formuler clairement la question à expliquer","Diviser le texte en parties","Conclure le sujet"], a:0, h:"Le sujet posé = la question précise qu'on va expliquer", l:"explicatif"},
+    {q:"Le sujet AMENÉ dans l'introduction sert à:", o:["Introduire le sujet de façon générale","Formuler la question précise","Annoncer les parties"], a:0, h:"Le sujet amené = entrée en matière générale pour mener au sujet", l:"explicatif"},
+    {q:"'Le volcan, tel une bombe sous pression...' = quel procédé?", o:["Comparaison","Définition","Illustration"], a:0, h:"'tel une' = comparaison → C de CIDRE", l:"explicatif"},
+    {q:"La conclusion du texte explicatif doit:", o:["Synthétiser et ouvrir sur une perspective","Répéter l'introduction mot à mot","Exprimer l'opinion de l'auteur"], a:0, h:"La conclusion = synthèse + ouverture (perspective, question)", l:"explicatif"},
+    {q:"Lequel est un marqueur de DÉFINITION (CIDRE)?", o:["se définit comme","par exemple","autrement dit"], a:0, h:"'se définit comme' = définition → D de CIDRE", l:"explicatif"},
+    {q:"Un texte explicatif répond principalement à la question:", o:["Pourquoi? Comment?","Qui? Quand?","Quoi penser?"], a:0, h:"Le texte explicatif explique des phénomènes → Pourquoi? Comment?", l:"explicatif"},
+    {q:"Laquelle de ces phrases convient au registre neutre?", o:["Les chercheurs ont établi que...","Je trouve que c'est fascinant!","C'est vraiment incroyable."], a:0, h:"Registre neutre = 3e personne, verbes déclaratifs, pas d'émotion", l:"explicatif"},
+    {q:"'D'une part... d'autre part...' dans un texte explicatif, c'est:", o:["Un procédé d'Énumération","Un procédé de Comparaison","Le sujet divisé"], a:0, h:"'D'une part... d'autre part' = énumération structurée → E de CIDRE", l:"explicatif"},
+    {q:"La phase EXPLICATIVE du développement peut contenir:", o:["Les procédés CIDRE","L'opinion de l'auteur","La conclusion"], a:0, h:"La phase explicative utilise les procédés CIDRE pour expliquer", l:"explicatif"},
+    {q:"Quel élément NE fait PAS partie du texte explicatif?", o:["Un plaidoyer émotionnel","Une définition","Une comparaison"], a:0, h:"Le texte explicatif est objectif → pas de plaidoyer émotionnel", l:"explicatif"},
+    {q:"Dans le schéma CIDRE, que signifie le I?", o:["Illustration","Implication","Indication"], a:0, h:"I = Illustration → donner des exemples concrets", l:"explicatif"},
+    {q:"Dans le schéma CIDRE, que signifie le R?", o:["Reformulation","Résumé","Réaction"], a:0, h:"R = Reformulation → reprendre autrement (autrement dit, c'est-à-dire)", l:"explicatif"},
+  ],
+
+  grammaire: [
+    // Original
+    {q:"Identifie le GN dans: 'Le petit chat noir dort.'", o:["Le petit chat noir","dort","Le petit"], a:0, h:"GN = déterminant + nom + expansion(s)", l:"grammaire"},
+    {q:"Le participe passé s'accorde avec ÊTRE selon:", o:["Le sujet","Le COD","L'attribut"], a:0, h:"Avec être: accord avec le SUJET (genre et nombre)", l:"grammaire"},
+    {q:"Lequel est au mode indicatif?", o:["Il mange","Qu'il mange","Mangeons!"], a:0, h:"Indicatif = mode de la réalité (fait certain)", l:"grammaire"},
+    {q:"'Les livres que j'ai lus' → pourquoi -s à 'lus'?", o:["COD 'que' placé avant","Le sujet 'livres'","L'auxiliaire 'ai'"], a:0, h:"Avec avoir: accord avec le COD si placé avant le verbe", l:"grammaire"},
+    {q:"La subordonnée relative 'que je connais' est introduite par:", o:["Pronom COD","Pronom sujet","Complément du nom"], a:0, h:"'que' = COD (remplaçable par 'le/la')", l:"grammaire"},
+    {q:"Dans 'elle est partie', le participe s'accorde car:", o:["Auxiliaire être + sujet féminin","Elle est COD","Participe invariable"], a:0, h:"Être + accord avec sujet → 'partie' (fém. sing.)", l:"grammaire"},
+    // New
+    {q:"Dans 'Je lui ai parlé', 'lui' est:", o:["Pronom COI","Pronom COD","Sujet"], a:0, h:"'lui' = pronom COI (parler À quelqu'un)", l:"grammaire"},
+    {q:"'Le chien court rapidement.' Le GV est:", o:["court rapidement","Le chien court","rapidement"], a:0, h:"GV = verbe + ses compléments → 'court rapidement'", l:"grammaire"},
+    {q:"Dans 'Les fleurs que j'ai cueillies', pourquoi -es?", o:["COD 'que' = fleurs (fém. pl.) avant le verbe","Sujet féminin pluriel","Auxiliaire avoir exige l'accord"], a:0, h:"Avec avoir: COD 'que' remplace 'fleurs' (fém. pl.) → accord -es", l:"grammaire"},
+    {q:"Quel pronom introduit une subordonnée relative SUJET?", o:["qui","que","dont"], a:0, h:"QUI = pronom relatif sujet (le chat qui dort)", l:"grammaire"},
+    {q:"'L'outil dont il a besoin' → 'dont' remplace:", o:["de l'outil","l'outil","pour l'outil"], a:0, h:"DONT = pronom relatif qui remplace 'de + GN' (avoir besoin DE)", l:"grammaire"},
+    {q:"Quelle est la fonction de 'rapidement' dans 'Il court rapidement'?", o:["Modificateur du verbe (adv.)","COD","Sujet"], a:0, h:"'rapidement' = adverbe → modificateur du verbe (comment?)", l:"grammaire"},
+    {q:"'Elle semble fatiguée.' Le verbe 'semble' est:", o:["Un verbe d'état","Un verbe d'action","Un auxiliaire"], a:0, h:"Verbe d'état (= être, paraître, sembler, devenir) + attribut du sujet", l:"grammaire"},
+    {q:"Dans 'nous nous sommes parlé', le participe est:", o:["invariable","accordé avec le sujet","accordé avec le COD"], a:0, h:"'se parler' = verbe non réciproque → participe invariable", l:"grammaire"},
+    {q:"Identifie le COD: 'Marie lit un roman policier.'", o:["un roman policier","Marie","lit"], a:0, h:"COD = complément direct du verbe (lire QUOI? → un roman)", l:"grammaire"},
+    {q:"'La maison où j'habite est grande.' Le 'où' est:", o:["Pronom relatif de lieu","Adverbe interrogatif","Conjonction"], a:0, h:"OÙ = pronom relatif de lieu dans une subordonnée relative", l:"grammaire"},
+    {q:"Dans 'Elles sont arrivées tôt.', le participe est accordé car:", o:["Auxiliaire être + sujet féminin pluriel","COD féminin pluriel avant","Adverbe 'tôt'"], a:0, h:"Être + sujet ELLES (fém. pl.) → arrivées (-ées)", l:"grammaire"},
+    {q:"'un, une, des, le, la, les' sont des:", o:["Déterminants","Pronoms","Adjectifs"], a:0, h:"Ce sont des déterminants (article défini ou indéfini)", l:"grammaire"},
+    {q:"Dans 'Je me suis lavé les mains.', le participe 'lavé' est:", o:["invariable car le COD est après","accordé avec 'je'","accordé avec 'mains'"], a:0, h:"COD = 'les mains' → placé APRÈS → participe invariable", l:"grammaire"},
+    {q:"'grand, belle, heureux, rapide' sont des:", o:["Adjectifs qualificatifs","Adverbes","Déterminants"], a:0, h:"Ce sont des adjectifs qualificatifs (décrivent le nom)", l:"grammaire"},
+  ]
+};
+
+// ═══════════════════════════════════════════════════════
+//  ALL CARDS DATABASE (expanded)
+// ═══════════════════════════════════════════════════════
+const CARDS = [
+  // ATTACK
+  {id:'strike',       name:'Frappe Basique',     type:'attack',cost:1,icon:'⚔️',eff:'6 DMG',    desc:'Coup direct. La base de tout combattant.',           dmg:6,  shld:0,drw:0,cat:'general',   color:'attack'},
+  {id:'logic_strike', name:'Frappe Logique',      type:'attack',cost:1,icon:'⚡',eff:'8 DMG',    desc:'Connecteur de cause → attaque causale!',             dmg:8,  shld:0,drw:0,cat:'connecteur',color:'attack'},
+  {id:'expl_blow',    name:'Coup Explicatif',     type:'attack',cost:1,icon:'📝',eff:'10 DMG',   desc:'La structure du texte explicatif comme arme.',       dmg:10, shld:0,drw:0,cat:'explicatif',color:'attack'},
+  {id:'homo_blade',   name:'Lame Homophone',      type:'attack',cost:1,icon:'🗡️',eff:'9 DMG',    desc:'Tranche l\'ambiguïté! Identifie le bon mot.',        dmg:9,  shld:0,drw:0,cat:'homophone', color:'attack'},
+  {id:'subj_strike',  name:'Frappe Subjonctive',  type:'attack',cost:2,icon:'🌙',eff:'15 DMG',   desc:'Conjugue correctement pour infliger des dégâts.',    dmg:15, shld:0,drw:0,cat:'subjonctif',color:'attack'},
+  {id:'double_hit',   name:'Double Frappe',       type:'attack',cost:2,icon:'⚔️⚔️',eff:'7×2 DMG','desc':'Deux questions, deux coups!',                      dmg:7,  shld:0,drw:0,cat:'grammaire', color:'attack',double:true},
+  {id:'crit_hit',     name:'Coup Critique',       type:'attack',cost:2,icon:'💥',eff:'20 DMG',   desc:'Question difficile = dégâts maximaux.',              dmg:20, shld:0,drw:0,cat:'subjonctif',color:'attack'},
+  {id:'storm',        name:'Tempête Grammaticale',type:'attack',cost:3,icon:'🌪️',eff:'25 DMG',   desc:'Déchaîne une tempête de règles grammaticales!',      dmg:25, shld:0,drw:0,cat:'grammaire', color:'attack'},
+  {id:'cidre_arrow',  name:'Flèche CIDRE',        type:'attack',cost:1,icon:'🏹',eff:'7 DMG',    desc:'Vise juste avec un procédé CIDRE.',                  dmg:7,  shld:0,drw:0,cat:'explicatif',color:'attack'},
+  {id:'cause_blow',   name:'Coup de Cause',       type:'attack',cost:1,icon:'🎯',eff:'8 DMG',    desc:'Car, parce que... la cause fait mal!',               dmg:8,  shld:0,drw:0,cat:'connecteur',color:'attack'},
+  {id:'exhaust_blow', name:'Frappe Épuisante',    type:'attack',cost:0,icon:'💫',eff:'4 DMG',    desc:'Sans coût en énergie, mais faible.',                 dmg:4,  shld:0,drw:0,cat:'general',   color:'attack'},
+  {id:'heavy_blow',   name:'Frappe Lourde',       type:'attack',cost:2,icon:'🔨',eff:'18 DMG',   desc:'Un coup puissant qui demande un bon subjonctif.',    dmg:18, shld:0,drw:0,cat:'subjonctif',color:'attack'},
+  {id:'chain_atk',    name:'Attaque Enchaînée',   type:'attack',cost:2,icon:'⛓️',eff:'12+6 DMG', desc:'Deux connecteurs → deux frappes.',                   dmg:12, shld:0,drw:0,cat:'connecteur',color:'attack',bonus:6},
+  // SKILL
+  {id:'shield_syn',   name:'Bouclier Syntaxique', type:'skill', cost:1,icon:'🛡️',eff:'Armure 8',  desc:'La bonne syntaxe te protège des attaques.',         dmg:0,  shld:8, drw:0,cat:'grammaire', color:'skill'},
+  {id:'quick_draw',   name:'Pioche Rapide',       type:'skill', cost:0,icon:'🃏',eff:'Piocher 2', desc:'Tire deux nouvelles cartes.',                        dmg:0,  shld:0, drw:2,cat:'general',   color:'skill'},
+  {id:'study_rest',   name:'Repos Studieux',      type:'skill', cost:1,icon:'📖',eff:'+12 PV',   desc:'Une bonne révision restaure tes points de vie.',     dmg:0,  shld:0, drw:0,heal:12,cat:'general',color:'skill'},
+  {id:'verb_armor',   name:'Armure Verbale',      type:'skill', cost:2,icon:'⚗️',eff:'Armure 16', desc:'Conjugaison parfaite = bouclier puissant.',          dmg:0,  shld:16,drw:0,cat:'subjonctif',color:'skill'},
+  {id:'coherence_e',  name:'Énergie de Cohérence',type:'skill', cost:0,icon:'🔗',eff:'+1 Énergie',desc:'Texte bien structuré → énergie supplémentaire.',    dmg:0,  shld:0, drw:0,energyGain:1,cat:'connecteur',color:'skill'},
+  {id:'memorize',     name:'Mémorisation',        type:'skill', cost:1,icon:'🧠',eff:'Piocher 3', desc:'La répétition forge l\'apprentissage.',              dmg:0,  shld:0, drw:3,cat:'general',   color:'skill'},
+  {id:'word_wall',    name:'Mur de Mots',         type:'skill', cost:2,icon:'🧱',eff:'Armure 22', desc:'Un dictionnaire entier te protège!',                 dmg:0,  shld:22,drw:0,cat:'grammaire', color:'skill'},
+  {id:'heal_big',     name:'Guérison Profonde',   type:'skill', cost:2,icon:'💚',eff:'+22 PV',   desc:'Une révision complète soigne les blessures.',        dmg:0,  shld:0, drw:0,heal:22,cat:'general',color:'skill'},
+  {id:'tactical',     name:'Repli Tactique',      type:'skill', cost:1,icon:'🔄',eff:'Armure 6 + Piocher 1',desc:'Protège et recharge.',                   dmg:0,  shld:6, drw:1,cat:'general',   color:'skill'},
+  {id:'aura_text',    name:'Aura du Texte',       type:'skill', cost:1,icon:'📜',eff:'Armure 10', desc:'La structure du texte explicatif comme armure.',    dmg:0,  shld:10,drw:0,cat:'explicatif',color:'skill'},
+  {id:'wild_draw',    name:'Lecture Frénétique',  type:'skill', cost:0,icon:'📚',eff:'Piocher 3, -4PV',desc:'Pioche 3 cartes mais prend des dégâts.',      dmg:0,  shld:0, drw:3,selfDmg:4,cat:'general',color:'skill'},
+  // POWER
+  {id:'text_mastery', name:'Maîtrise du Texte',   type:'power', cost:2,icon:'✨',eff:'Force +2',  desc:'Permanent: +2 dégâts sur toutes tes cartes.',       dmg:0,  shld:0, drw:0,buff:'str',  buffV:2,cat:'explicatif',color:'power'},
+  {id:'eloquence',    name:'Flot d\'Éloquence',   type:'power', cost:1,icon:'🌊',eff:'+1 carte/tour',desc:'Permanent: pioche une carte de plus chaque tour.',dmg:0,shld:0,drw:0,buff:'drawB',buffV:1,cat:'general',color:'power'},
+  {id:'subj_aura',    name:'Aura Subjonctive',    type:'power', cost:3,icon:'🌟',eff:'Force +4',  desc:'Permanent: maîtrise subjonctive → force décuplée.', dmg:0,  shld:0, drw:0,buff:'str',  buffV:4,cat:'subjonctif',color:'power'},
+  {id:'divine_gram',  name:'Grammaire Divine',    type:'power', cost:3,icon:'⚖️',eff:'Armure +6/tour',desc:'Permanent: +6 armure au début de chaque tour.', dmg:0,shld:0,drw:0,buff:'armorT',buffV:6,cat:'grammaire',color:'power'},
+  {id:'burn_enemy',   name:'Brûlure Linguistique',type:'power', cost:2,icon:'🔥',eff:'Brûlure 3/tour',desc:'Permanent: l\'ennemi perd 3 PV par tour.',     dmg:0,  shld:0, drw:0,buff:'burn', buffV:3,cat:'connecteur',color:'power'},
+  {id:'mana_surge',   name:'Surge de Mana',       type:'power', cost:3,icon:'💎',eff:'+1 Énergie max',desc:'Permanent: +1 énergie maximum par tour.',      dmg:0,  shld:0, drw:0,buff:'maxE', buffV:1,cat:'general',color:'power'},
+];
+
+const STARTER_IDS = ['strike','strike','expl_blow','homo_blade','homo_blade','shield_syn','shield_syn','quick_draw','study_rest','cidre_arrow'];
+
+// ═══════════════════════════════════════════════════════
+//  ENEMIES
+// ═══════════════════════════════════════════════════════
+const ENEMIES = [
+  {id:'zombie',   name:"Zombie des Fautes",   sprite:"🧟", hp:28, atk:7,  type:'combat',cat:'homophone', reward:12},
+  {id:'vampire',  name:"Vampire Homophone",   sprite:"🧛", hp:36, atk:9,  type:'combat',cat:'homophone', reward:14},
+  {id:'ghost',    name:"Spectre de Confusion",sprite:"👻", hp:33, atk:10, type:'combat',cat:'connecteur',reward:13},
+  {id:'witch',    name:"Sorcière Subjonctive",sprite:"🧙‍♀️",hp:44, atk:13, type:'elite', cat:'subjonctif',reward:20},
+  {id:'golem',    name:"Golem de Grammaire",  sprite:"🗿", hp:52, atk:14, type:'elite', cat:'grammaire', reward:22},
+  {id:'demon',    name:"Démon des Connecteurs",sprite:"😈",hp:48, atk:12, type:'elite', cat:'connecteur',reward:21},
+  {id:'lich',     name:"Liche Subjonctive",   sprite:"💀", hp:42, atk:12, type:'elite', cat:'subjonctif',reward:22},
+  {id:'dragon',   name:"Dragon Explicatif",   sprite:"🐉", hp:75, atk:16, type:'boss',  cat:'explicatif',reward:35},
+  {id:'archiviste',name:"Archiviste Suprême", sprite:"🌑", hp:95, atk:19, type:'boss',  cat:'grammaire', reward:50},
+  {id:'mummy',    name:"Momie du Passé Composé",sprite:"🏺",hp:30, atk:8, type:'combat',cat:'grammaire', reward:13},
+  {id:'banshee',  name:"Banshee des Homophones",sprite:"🌫️",hp:34, atk:10,type:'combat',cat:'homophone', reward:14},
+];
+
+// ═══════════════════════════════════════════════════════
+//  MAP CONFIG
+// ═══════════════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    name:"Chapitre I — Les Fondations",
+    rows:[
+      [{type:'combat',e:'zombie'},{type:'combat',e:'banshee'},{type:'combat',e:'ghost'}],
+      [{type:'rest'},{type:'mystery'},{type:'shop'}],
+      [{type:'combat',e:'vampire'},{type:'combat',e:'mummy'}],
+      [{type:'elite',e:'witch'}],
+    ]
+  },
+  {
+    name:"Chapitre II — La Flèche Montante",
+    rows:[
+      [{type:'combat',e:'ghost'},{type:'combat',e:'vampire'},{type:'combat',e:'mummy'}],
+      [{type:'shop'},{type:'mystery'},{type:'rest'}],
+      [{type:'elite',e:'golem'},{type:'elite',e:'lich'}],
+      [{type:'elite',e:'demon'}],
+    ]
+  },
+  {
+    name:"Chapitre III — L'Épreuve Finale",
+    rows:[
+      [{type:'combat',e:'banshee'},{type:'elite',e:'witch'},{type:'combat',e:'mummy'}],
+      [{type:'rest'},{type:'shop'}],
+      [{type:'elite',e:'golem'},{type:'elite',e:'demon'}],
+      [{type:'boss',e:'dragon'}],
+      [{type:'boss',e:'archiviste'}],
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════════════════
+let G = {};
+
+function initG() {
+  G = {
+    hp:80, maxHp:80, gold:0,
+    deck:[...STARTER_IDS],
+    drawPile:[], hand:[], discard:[],
+    buffs:{str:0,drawB:0,armorT:0,burn:0,maxE:0},
+    chapter:0, row:0,
+    visited:new Set(),
+    // battle
+    energy:3, maxEnergy:3,
+    pShield:0, eShield:0,
+    enemy:null, eHp:0, eMaxHp:0,
+    eBurn:0,
+    turn:1,
+    streak:0, // correct answer streak
+    selIdx:null, pendCard:null, pendQ:null,
+    isBoss:false,
+    curNode:null,
+    // meta
+    stats:{won:0, qAnswered:0, qCorrect:0, dmgDealt:0, streakMax:0},
+    lessonFromBattle:null,
+    returnScreen:'s-map',
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+//  SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+// ═══════════════════════════════════════════════════════
+//  TITLE
+// ═══════════════════════════════════════════════════════
+function startNewGame() {
+  initG();
+  buildMap();
+  show('s-map');
+  showChReveal(CHAPTERS[0].name);
+}
+
+// ═══════════════════════════════════════════════════════
+//  MAP
+// ═══════════════════════════════════════════════════════
+function buildMap() {
+  const ch = CHAPTERS[G.chapter];
+  document.getElementById('map-ch-name').textContent = ch.name;
+  document.getElementById('map-hp').textContent = G.hp;
+  document.getElementById('map-maxhp').textContent = G.maxHp;
+  document.getElementById('map-gold').textContent = G.gold;
+  document.getElementById('map-deckct').textContent = G.deck.length;
+
+  // Chapter dots
+  const dots = document.getElementById('ch-dots');
+  dots.innerHTML = '';
+  CHAPTERS.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'chapter-dot ' + (i < G.chapter ? 'past' : i === G.chapter ? 'current' : 'future');
+    dots.appendChild(d);
+  });
+
+  const body = document.getElementById('map-body');
+  body.innerHTML = '';
+
+  const nodeInfo = {
+    combat:  {icon:'⚔️', label:'Combat',      cls:'node-combat'},
+    elite:   {icon:'💜', label:'Élite',        cls:'node-elite'},
+    boss:    {icon:'🐉', label:'BOSS',          cls:'node-boss'},
+    rest:    {icon:'🌿', label:'Repos',         cls:'node-rest'},
+    shop:    {icon:'📚', label:'Bibliothèque',  cls:'node-shop'},
+    mystery: {icon:'🌀', label:'Mystère',       cls:'node-mystery'},
+  };
+
+  ch.rows.forEach((row, ri) => {
+    // connector
+    if (ri > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'map-connector';
+      conn.innerHTML = '<div class="map-connector-line"></div>';
+      body.appendChild(conn);
+    }
+    // row label
+    const lbl = document.createElement('div');
+    lbl.className = 'map-row-label';
+    lbl.textContent = ri === ch.rows.length - 1 ? (ch.rows[ri][0]?.type === 'boss' ? '⚠ BOSS' : 'Élite') : `Zone ${ri+1}`;
+    body.appendChild(lbl);
+
+    const rowEl = document.createElement('div');
+    rowEl.className = 'map-row';
+
+    row.forEach((node, ci) => {
+      const nid = `${G.chapter}-${ri}-${ci}`;
+      const visited = G.visited.has(nid);
+      const available = ri === G.row && !visited;
+      const locked = ri > G.row;
+      const ni = nodeInfo[node.type] || nodeInfo.combat;
+
+      const el = document.createElement('div');
+      el.className = `node ${ni.cls}${visited?' visited':locked?' locked':available?' available':''}`;
+      el.innerHTML = `<div class="node-inner"><div class="node-emoji">${ni.icon}</div><div class="node-label">${ni.label}</div></div>`;
+
+      if (available) {
+        const handler = () => enterNode(ri, ci, node, nid);
+        el.addEventListener('click', handler);
+        el.addEventListener('touchend', e => { e.preventDefault(); handler(); });
+      }
+      rowEl.appendChild(el);
+    });
+    body.appendChild(rowEl);
+  });
+}
+
+function markVisited(nid, ri) {
+  G.visited.add(nid);
+  const ch = CHAPTERS[G.chapter];
+  const allDone = ch.rows[ri].every((_,ci) => G.visited.has(`${G.chapter}-${ri}-${ci}`));
+  if (allDone && ri >= G.row) G.row = ri + 1;
+}
+
+function enterNode(ri, ci, node, nid) {
+  G.curNode = {ri, ci, nid, node};
+  if (node.type === 'rest')    { doRest(nid, ri); return; }
+  if (node.type === 'shop')    { doShop(nid, ri); return; }
+  if (node.type === 'mystery') { doMystery(nid, ri); return; }
+  startBattle(node.e || 'zombie', nid, ri);
+}
+
+// ═══════════════════════════════════════════════════════
+//  REST
+// ═══════════════════════════════════════════════════════
+function doRest(nid, ri) {
+  const heal = Math.floor(G.maxHp * 0.3);
+  G.hp = Math.min(G.hp + heal, G.maxHp);
+  markVisited(nid, ri);
+  bigFlash(`+${heal} PV 💚`, 'var(--green)');
+  toast(`Vous récupérez ${heal} points de vie!`);
+  setTimeout(() => { buildMap(); show('s-map'); }, 1400);
+}
+
+// ═══════════════════════════════════════════════════════
+//  MYSTERY
+// ═══════════════════════════════════════════════════════
+function doMystery(nid, ri) {
+  const events = [
+    { msg: '✨ Un vieux parchemin vous accorde +15 PV!', fn: () => { G.hp = Math.min(G.hp + 15, G.maxHp); } },
+    { msg: '🪙 Vous trouvez 20 pièces d\'or!', fn: () => { G.gold += 20; } },
+    { msg: '🃏 Un livre magique apparaît — vous piochez une carte bonus!', fn: () => { const rnd = CARDS[Math.floor(Math.random()*CARDS.length)]; G.deck.push(rnd.id); toast(`"${rnd.name}" ajoutée au deck!`); } },
+    { msg: '💀 Un piège! Vous perdez 10 PV.', fn: () => { G.hp = Math.max(1, G.hp - 10); } },
+    { msg: '🌿 Une potion de guérison vous soigne de 20 PV!', fn: () => { G.hp = Math.min(G.hp + 20, G.maxHp); } },
+    { msg: '🪙 Un commerçant vous offre 30 pièces d\'or!', fn: () => { G.gold += 30; } },
+  ];
+  const ev = events[Math.floor(Math.random() * events.length)];
+  ev.fn();
+  markVisited(nid, ri);
+  bigFlash('🌀 Mystère!', 'var(--blue)');
+  toast(ev.msg);
+  setTimeout(() => { buildMap(); show('s-map'); }, 1800);
+}
+
+// ═══════════════════════════════════════════════════════
+//  SHOP
+// ═══════════════════════════════════════════════════════
+function doShop(nid, ri) {
+  G.curNode = {nid, ri, node:{type:'shop'}};
+  markVisited(nid, ri);
+  document.getElementById('sh-gold').textContent = G.gold;
+
+  // Pick 5 random cards
+  const avail = shuffle([...CARDS]).slice(0, 5);
+  const prices = avail.map(c => c.type==='power' ? 55 : c.cost >= 2 ? 38 : 25);
+
+  const grid = document.getElementById('sh-grid');
+  grid.innerHTML = '';
+  avail.forEach((card, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'shop-item';
+    wrap.innerHTML = renderCard(card) + `<div class="shop-price">🪙 ${prices[i]}</div>`;
+    wrap.addEventListener('click', () => {
+      if (G.gold >= prices[i]) {
+        G.gold -= prices[i];
+        G.deck.push(card.id);
+        document.getElementById('sh-gold').textContent = G.gold;
+        wrap.classList.add('purchased');
+        bigFlash('Achetée! 🃏', 'var(--gold)');
+      } else {
+        toast('❌ Pas assez d\'or!');
+      }
+    });
+    grid.appendChild(wrap);
+  });
+
+  // Remove cards section
+  const remSec = document.getElementById('sh-remove');
+  const remList = document.getElementById('sh-remove-list');
+  remSec.style.display = '';
+  remList.innerHTML = '';
+  const removable = [...new Set(G.deck)].slice(0, 4);
+  removable.forEach(id => {
+    const card = getCard(id);
+    const btn = document.createElement('button');
+    btn.className = 'remove-btn';
+    btn.innerHTML = `<span>${card.icon} ${card.name}</span><span class="remove-cost">🪙 45</span>`;
+    btn.addEventListener('click', () => {
+      if (G.gold >= 45) {
+        G.gold -= 45;
+        const idx = G.deck.indexOf(id);
+        if (idx !== -1) G.deck.splice(idx, 1);
+        document.getElementById('sh-gold').textContent = G.gold;
+        btn.style.opacity = '0.3';
+        btn.disabled = true;
+        toast(`"${card.name}" retirée du deck!`);
+      } else toast('❌ Pas assez d\'or!');
+    });
+    remList.appendChild(btn);
+  });
+
+  show('s-shop');
+}
+
+function leaveShop() { buildMap(); show('s-map'); }
+
+// ═══════════════════════════════════════════════════════
+//  BATTLE — INIT
+// ═══════════════════════════════════════════════════════
+function startBattle(eId, nid, ri) {
+  const eDef = ENEMIES.find(e => e.id === eId) || ENEMIES[0];
+  G.curNode = {nid, ri, node:{type:eDef.type}};
+  G.enemy = {...eDef};
+  G.eHp = eDef.hp;
+  G.eMaxHp = eDef.hp;
+  G.eShield = 0;
+  G.pShield = G.buffs.armorT;
+  G.eBurn = 0;
+  G.turn = 1;
+  G.energy = G.maxEnergy + G.buffs.maxE;
+  G.maxEnergy = 3;
+  G.hand = [];
+  G.drawPile = shuffle([...G.deck]);
+  G.discard = [];
+  G.selIdx = null;
+  G.pendCard = null;
+  G.streak = 0;
+  G.isBoss = eDef.type === 'boss';
+
+  draw(5 + G.buffs.drawB);
+  updateBattle();
+  show('s-battle');
+  updateEnemyIntent();
+  if (G.turn === 1) toast('🃏 Appuie sur une carte pour jouer!');
+}
+
+// ═══════════════════════════════════════════════════════
+//  BATTLE — CARD DRAW / PLAY
+// ═══════════════════════════════════════════════════════
+function getCard(id) { return CARDS.find(c => c.id === id) || CARDS[0]; }
+
+function draw(n) {
+  for (let i = 0; i < n; i++) {
+    if (!G.drawPile.length) {
+      if (!G.discard.length) break;
+      G.drawPile = shuffle([...G.discard]);
+      G.discard = [];
+    }
+    if (G.drawPile.length) G.hand.push(G.drawPile.pop());
+  }
+}
+
+function renderCard(card, idx, small) {
+  const gemCls = `gem-${card.type}`;
+  const gemV = card.cost === 0 ? '0' : card.cost;
+  const dis = idx !== undefined && G.energy < card.cost ? ' card-disabled' : '';
+  const sel = idx !== undefined && G.selIdx === idx ? ' card-selected' : '';
+  const clickAtt = idx !== undefined ? ` onclick="playCardUI(${idx})"` : '';
+  return `<div class="card card-c-${card.color}${dis}${sel}"${clickAtt}>
+    <div class="card-cost-gem ${gemCls}">${gemV}</div>
+    <div class="card-stripe stripe-${card.type}"></div>
+    <div class="card-icon">${card.icon}</div>
+    <div class="card-name cn-${card.type}">${card.name}</div>
+    <div class="card-desc">${card.desc}</div>
+    <div class="card-effect ce-${card.type}">${card.eff}</div>
+  </div>`;
+}
+
+function updateBattle() {
+  // Player HP
+  const pPct = (G.hp / G.maxHp * 100);
+  document.getElementById('bt-phpbar').style.width = pPct + '%';
+  document.getElementById('bt-php').textContent = G.hp;
+  document.getElementById('bt-pmaxhp').textContent = G.maxHp;
+
+  // Shield display
+  const pShieldEl = document.getElementById('bt-pshield-text');
+  const pShieldBadge = document.getElementById('bt-pshieldbadge');
+  const pShieldV = document.getElementById('bt-pshieldv');
+  const pShieldV2 = document.getElementById('bt-pshieldv2');
+  if (G.pShield > 0) {
+    pShieldEl.style.display = '';
+    document.getElementById('bt-pshieldv').textContent = G.pShield;
+    pShieldBadge.style.display = 'flex';
+    pShieldV2.textContent = G.pShield;
+  } else {
+    pShieldEl.style.display = 'none';
+    pShieldBadge.style.display = 'none';
+  }
+
+  // Enemy HP
+  const ePct = (G.eHp / G.eMaxHp * 100);
+  const ebar = document.getElementById('bt-ehpbar');
+  ebar.style.width = ePct + '%';
+  if (G.isBoss) ebar.className = 'hpbar-fill boss-fill';
+  document.getElementById('bt-ehp').textContent = G.eHp;
+  document.getElementById('bt-emaxhp').textContent = G.eMaxHp;
+  document.getElementById('bt-ename').textContent = G.enemy.name;
+  document.getElementById('bt-eicon').textContent = G.enemy.sprite;
+  document.getElementById('bt-esprite').textContent = G.enemy.sprite;
+
+  const eShieldEl = document.getElementById('bt-eshield-text');
+  if (G.eShield > 0) { eShieldEl.style.display = ''; document.getElementById('bt-eshieldv').textContent = G.eShield; }
+  else eShieldEl.style.display = 'none';
+
+  // Turn / streak
+  document.getElementById('bt-turn').textContent = `Tour ${G.turn}`;
+  document.getElementById('bt-streak').textContent = G.streak;
+  const streakBadge = document.getElementById('bt-streakbadge');
+  if (G.streak >= 2) { streakBadge.style.display = 'flex'; document.getElementById('bt-streakn').textContent = G.streak; }
+  else streakBadge.style.display = 'none';
+
+  // Mana
+  const curE = G.maxEnergy + G.buffs.maxE;
+  const gems = document.getElementById('bt-mana-gems');
+  gems.innerHTML = '';
+  for (let i = 0; i < curE; i++) {
+    const g = document.createElement('div');
+    g.className = 'mgem ' + (i < G.energy ? 'full' : 'empty');
+    gems.appendChild(g);
+  }
+  document.getElementById('bt-mana-label').textContent = `${G.energy}/${curE}`;
+
+  // Draw / discard counts
+  document.getElementById('bt-drawct').textContent = G.drawPile.length;
+  document.getElementById('bt-discardct').textContent = G.discard.length;
+
+  // Player buffs status
+  const ps = document.getElementById('bt-pstatus');
+  ps.innerHTML = '';
+  if (G.buffs.str > 0)    ps.innerHTML += `<div class="sicon sicon-str" title="Force +${G.buffs.str}">💪<span class="scount">${G.buffs.str}</span></div>`;
+  if (G.buffs.drawB > 0)  ps.innerHTML += `<div class="sicon sicon-draw" title="Pioche +${G.buffs.drawB}/tour">🃏<span class="scount">${G.buffs.drawB}</span></div>`;
+  if (G.buffs.armorT > 0) ps.innerHTML += `<div class="sicon sicon-shld" title="Armure +${G.buffs.armorT}/tour">🛡️<span class="scount">${G.buffs.armorT}</span></div>`;
+  if (G.buffs.maxE > 0)   ps.innerHTML += `<div class="sicon" style="background:rgba(52,219,100,0.2)" title="+${G.buffs.maxE} énergie max">💎<span class="scount">${G.buffs.maxE}</span></div>`;
+
+  // Enemy burn
+  const es = document.getElementById('bt-estatus');
+  es.innerHTML = '';
+  if (G.buffs.burn > 0) es.innerHTML += `<div class="sicon sicon-burn" title="Brûlure ${G.buffs.burn}/tour">🔥<span class="scount">${G.buffs.burn}</span></div>`;
+
+  // Hand
+  const handEl = document.getElementById('bt-hand');
+  handEl.innerHTML = '';
+  G.hand.forEach((id, i) => {
+    const card = getCard(id);
+    const wrap = document.createElement('div');
+    wrap.innerHTML = renderCard(card, i);
+    handEl.appendChild(wrap.firstChild);
+  });
+}
+
+function playCardUI(idx) {
+  const id = G.hand[idx];
+  const card = getCard(id);
+  if (G.energy < card.cost) { toast('❌ Pas assez d\'énergie!'); return; }
+
+  G.selIdx = idx;
+  G.pendCard = card;
+
+  // Choose question category
+  const cat = card.cat === 'general' ? randomCat() : card.cat;
+  const pool = Q[cat] || Q.homophone;
+  G.pendQ = pool[Math.floor(Math.random() * pool.length)];
+
+  openChoicesModal(card, G.pendQ);
+  updateBattle(); // show selected card
+}
+
+function randomCat() {
+  const cats = ['homophone','connecteur','subjonctif','explicatif','grammaire'];
+  return cats[Math.floor(Math.random() * cats.length)];
+}
+
+// ═══════════════════════════════════════════════════════
+//  CHOICES MODAL
+// ═══════════════════════════════════════════════════════
+function openChoicesModal(card, q) {
+  document.getElementById('mc-icon').textContent = card.icon;
+  document.getElementById('mc-title').textContent = card.name;
+  document.getElementById('mc-subtitle').textContent = card.eff;
+  document.getElementById('mc-question').innerHTML = q.q.replace(/_+/g, '<span class="q-blank">___</span>');
+  document.getElementById('mc-lesson-btn').dataset.lesson = q.l;
+  document.getElementById('mc-hint').classList.remove('show');
+  document.getElementById('mc-hint').textContent = '';
+
+  // Update battle question display
+  const cat = q.l || 'general';
+  const badgeMap = {homophone:'qb-homophone HOMOPHONE',subjonctif:'qb-subjonctif SUBJONCTIF',connecteur:'qb-connecteur CONNECTEUR',explicatif:'qb-explicatif EXPLICATIF',grammaire:'qb-grammaire GRAMMAIRE'};
+  const [bc, bl] = (badgeMap[cat]||'qb-general GÉNÉRAL').split(' ');
+  document.getElementById('bt-qbadge').className = `q-badge ${bc}`;
+  document.getElementById('bt-qbadge').textContent = bl;
+  document.getElementById('bt-qtext').innerHTML = q.q.replace(/_+/g, '<span class="q-blank">___</span>');
+
+  const grid = document.getElementById('mc-grid');
+  grid.innerHTML = '';
+  const cols = q.o.length >= 3 ? (q.o.length === 3 ? 'cols3' : '') : '';
+  grid.className = `choices-grid ${cols}`;
+
+  const letters = ['A','B','C','D'];
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.innerHTML = `<div class="choice-letter">${letters[i]}</div><div class="choice-text">${opt}</div>`;
+    btn.addEventListener('click', () => resolveChoice(i, btn, q, card));
+    btn.addEventListener('touchend', e => { e.preventDefault(); resolveChoice(i, btn, q, card); });
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('modal-choices').classList.add('open');
+}
+
+function resolveChoice(chosen, btn, q, card) {
+  const correct = chosen === q.a;
+  G.stats.qAnswered++;
+
+  const allBtns = document.querySelectorAll('#mc-grid .choice');
+  allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+  if (correct) {
+    G.stats.qCorrect++;
+    G.streak++;
+    G.stats.streakMax = Math.max(G.stats.streakMax, G.streak);
+    btn.classList.add('state-correct');
+    screenFlash(true);
+    setTimeout(() => {
+      document.getElementById('modal-choices').classList.remove('open');
+      applyCard(card, true);
+    }, 700);
+  } else {
+    G.streak = 0;
+    btn.classList.add('state-wrong');
+    allBtns[q.a].classList.add('state-reveal');
+    screenFlash(false);
+    const hint = document.getElementById('mc-hint');
+    hint.textContent = '💡 ' + q.h;
+    hint.classList.add('show');
+    document.getElementById('bt-qtext').innerHTML = `<span style="color:var(--gold)">💡 Astuce:</span> ${q.h}`;
+    setTimeout(() => {
+      document.getElementById('modal-choices').classList.remove('open');
+      applyCard(card, false);
+    }, 2000);
+  }
+}
+
+function applyCard(card, correct) {
+  if (G.selIdx === null) return;
+  G.discard.push(G.hand[G.selIdx]);
+  G.hand.splice(G.selIdx, 1);
+  G.energy -= card.cost;
+  G.selIdx = null;
+
+  const mult = correct ? 1 : 0.4;
+  const streakBonus = correct ? Math.min(G.streak - 1, 5) : 0; // +1 dmg per streak over 1
+
+  if (card.dmg > 0) {
+    const d = Math.floor((card.dmg + G.buffs.str + streakBonus) * mult);
+    if (card.double) { doDmgEnemy(d); setTimeout(() => doDmgEnemy(d), 350); }
+    else if (card.bonus) { doDmgEnemy(d); setTimeout(() => doDmgEnemy(Math.floor(card.bonus * mult)), 350); }
+    else doDmgEnemy(d);
+  }
+  if (card.shld > 0 && correct)   G.pShield += card.shld;
+  if (card.drw > 0 && correct)    draw(card.drw);
+  if (card.heal > 0 && correct)   G.hp = Math.min(G.hp + card.heal, G.maxHp);
+  if (card.selfDmg && correct)    G.hp = Math.max(1, G.hp - card.selfDmg);
+  if (card.energyGain && correct) G.energy = Math.min(G.energy + card.energyGain, G.maxEnergy + G.buffs.maxE + 3);
+
+  if (correct && card.buff) {
+    if (card.buff === 'str')    G.buffs.str    += card.buffV;
+    if (card.buff === 'drawB')  G.buffs.drawB  += card.buffV;
+    if (card.buff === 'armorT') G.buffs.armorT += card.buffV;
+    if (card.buff === 'burn')   G.buffs.burn   += card.buffV;
+    if (card.buff === 'maxE')   G.buffs.maxE   += card.buffV;
+    bigFlash(card.eff, 'var(--purple)');
+  }
+
+  updateBattle();
+  checkEnd();
+}
+
+// ═══════════════════════════════════════════════════════
+//  COMBAT MATH
+// ═══════════════════════════════════════════════════════
+function doDmgEnemy(dmg) {
+  let d = Math.max(0, dmg);
+  if (G.eShield > 0) { const b = Math.min(G.eShield, d); G.eShield -= b; d -= b; }
+  G.eHp = Math.max(0, G.eHp - d);
+  G.stats.dmgDealt += d;
+  if (d > 0) {
+    spawnDmg(d, 'var(--crimson)', 'enemy');
+    const spr = document.getElementById('bt-esprite');
+    spr.classList.remove('hit-flash-enemy');
+    void spr.offsetWidth;
+    spr.classList.add('hit-flash-enemy');
+    setTimeout(() => spr.classList.remove('hit-flash-enemy'), 400);
+  }
+}
+
+function doDmgPlayer(dmg) {
+  let d = Math.max(0, dmg);
+  if (G.pShield > 0) { const b = Math.min(G.pShield, d); G.pShield -= b; d -= b; }
+  G.hp = Math.max(0, G.hp - d);
+  if (d > 0) {
+    spawnDmg(d, 'var(--hp)', 'player');
+    const spr = document.getElementById('bt-psprite');
+    spr.classList.remove('hit-flash-player');
+    void spr.offsetWidth;
+    spr.classList.add('hit-flash-player');
+    setTimeout(() => spr.classList.remove('hit-flash-player'), 400);
+    document.getElementById('flash-overlay').className = 'flash-red';
+    setTimeout(() => document.getElementById('flash-overlay').className = '', 400);
+  }
+}
+
+function spawnDmg(val, color, target) {
+  const el = document.createElement('div');
+  el.className = 'dmg-num';
+  el.textContent = `-${val}`;
+  el.style.color = color;
+  const bx = target === 'enemy' ? innerWidth * 0.72 : innerWidth * 0.22;
+  el.style.left = (bx + (Math.random()-0.5)*40) + 'px';
+  el.style.top = (innerHeight * 0.32) + 'px';
+  document.getElementById('dmg-layer').appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TURN END
+// ═══════════════════════════════════════════════════════
+function endTurn() {
+  G.discard.push(...G.hand);
+  G.hand = [];
+
+  // Enemy burn
+  if (G.buffs.burn > 0) {
+    doDmgEnemy(G.buffs.burn);
+    spawnDmg(G.buffs.burn, 'var(--orange)', 'enemy');
+  }
+
+  // Enemy attack
+  if (G.eHp > 0) {
+    const eDmg = G.enemy.atk + Math.floor(G.turn * 1.2);
+    doDmgPlayer(eDmg);
+    // Sometimes enemy applies debuffs
+    if (G.turn % 3 === 0 && Math.random() > 0.5) {
+      G.buffs.str = Math.max(0, G.buffs.str - 1);
+      toast('⚠️ L\'ennemi réduit votre Force de 1!');
+    }
+  }
+
+  G.turn++;
+  G.energy = G.maxEnergy + G.buffs.maxE;
+  G.pShield = G.buffs.armorT;
+  draw(4 + G.buffs.drawB);
+  updateEnemyIntent();
+  updateBattle();
+  updateBattle();
+  checkEnd();
+}
+
+function updateEnemyIntent() {
+  const dmg = G.enemy.atk + Math.floor(G.turn * 1.2);
+  document.getElementById('bt-intent-val').textContent = `⚔️ Attaque: ${dmg} dégâts`;
+  const debuffEl = document.getElementById('bt-intent-debuff');
+  if (G.turn % 3 === 0) {
+    debuffEl.style.display = '';
+    debuffEl.textContent = '+ Réduire votre Force';
+  } else {
+    debuffEl.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  BATTLE END
+// ═══════════════════════════════════════════════════════
+function checkEnd() {
+  if (G.eHp <= 0) {
+    G.stats.won++;
+    G.gold += G.enemy.reward;
+    markVisited(G.curNode.nid, G.curNode.ri);
+    setTimeout(showReward, 600);
+  } else if (G.hp <= 0) {
+    setTimeout(showGameOver, 500);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  REWARD
+// ═══════════════════════════════════════════════════════
+function showReward() {
+  const isBoss = G.isBoss;
+  const numPicks = isBoss ? 3 : 1;
+  document.getElementById('rw-title').textContent = isBoss ? '🏆🐉 Boss Vaincu!' : '⚔️ Victoire!';
+  document.getElementById('rw-sub').textContent = isBoss ? `Choisis ${numPicks} cartes de récompense!` : 'Choisis une carte à ajouter à ton grimoire';
+  document.getElementById('rw-gold').textContent = `🪙 +${G.enemy.reward} or gagné`;
+  bigFlash(isBoss ? '🐉 BOSS VAINCU!' : '✓ Victoire!', isBoss ? 'var(--gold)' : 'var(--green)');
+
+  const picks = shuffle([...CARDS]).slice(0, 3);
+  const cont = document.getElementById('rw-picks');
+  cont.innerHTML = '';
+  let picksChosen = 0;
+
+  picks.forEach(card => {
+    const wrap = document.createElement('div');
+    wrap.className = 'reward-pick-wrap';
+    wrap.innerHTML = renderCard(card);
+    wrap.addEventListener('click', () => {
+      if (picksChosen < numPicks && !wrap.classList.contains('chosen')) {
+        G.deck.push(card.id);
+        wrap.classList.add('chosen');
+        picksChosen++;
+        bigFlash(`${card.name} ajoutée!`, 'var(--gold)');
+      }
+    });
+    cont.appendChild(wrap);
+  });
+
+  show('s-reward');
+
+  // Check final win
+  if (isBoss && G.enemy.id === 'archiviste') {
+    setTimeout(showWin, 4000);
+  }
+}
+
+function skipReward() { returnToMap(); }
+
+function returnToMap() {
+  // Check chapter advance
+  const ch = CHAPTERS[G.chapter];
+  const allDone = ch.rows.every((row, ri) => row.every((_,ci) => G.visited.has(`${G.chapter}-${ri}-${ci}`)));
+  if (allDone && G.chapter < CHAPTERS.length - 1) {
+    G.chapter++;
+    G.row = 0;
+    buildMap();
+    show('s-map');
+    showChReveal(CHAPTERS[G.chapter].name);
+  } else {
+    buildMap();
+    show('s-map');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  GAME OVER / WIN
+// ═══════════════════════════════════════════════════════
+function showGameOver() {
+  const pct = G.stats.qAnswered > 0 ? Math.round(G.stats.qCorrect / G.stats.qAnswered * 100) : 0;
+  document.getElementById('ov-stats').innerHTML = statsHTML(pct);
+  show('s-over');
+}
+
+function showWin() {
+  const pct = G.stats.qAnswered > 0 ? Math.round(G.stats.qCorrect / G.stats.qAnswered * 100) : 0;
+  document.getElementById('win-stats').innerHTML = statsHTML(pct);
+  bigFlash('🎓 MAÎTRE!', 'var(--gold)');
+  show('s-win');
+}
+
+function statsHTML(pct) {
+  return `
+    <div class="stat-row"><span>⚔️ Batailles gagnées</span><span class="stat-val">${G.stats.won}</span></div>
+    <div class="stat-row"><span>❓ Questions répondues</span><span class="stat-val">${G.stats.qAnswered}</span></div>
+    <div class="stat-row"><span>✅ Taux de réussite</span><span class="stat-val">${pct}%</span></div>
+    <div class="stat-row"><span>🔥 Série maximale</span><span class="stat-val">${G.stats.streakMax} réponses</span></div>
+    <div class="stat-row"><span>💥 Dégâts infligés</span><span class="stat-val">${G.stats.dmgDealt}</span></div>
+    <div class="stat-row"><span>🪙 Or accumulé</span><span class="stat-val">${G.gold}</span></div>
+    <div class="stat-row"><span>🃏 Taille du grimoire</span><span class="stat-val">${G.deck.length} cartes</span></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  DECK VIEW
+// ═══════════════════════════════════════════════════════
+function openDeckView(fromTitle) {
+  if (fromTitle && !G.deck) initG();
+  G.returnScreen = fromTitle ? 's-title' : 's-map';
+  document.getElementById('dk-count').textContent = G.deck.length;
+  const grid = document.getElementById('dk-grid');
+  grid.innerHTML = '';
+  const counts = {};
+  G.deck.forEach(id => counts[id] = (counts[id]||0)+1);
+  Object.entries(counts).forEach(([id, ct]) => {
+    const card = getCard(id);
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.innerHTML = renderCard(card);
+    if (ct > 1) {
+      const badge = document.createElement('div');
+      badge.textContent = `×${ct}`;
+      badge.style.cssText = 'position:absolute;top:4px;right:4px;background:var(--gold);color:#0a0a00;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:900;z-index:10;pointer-events:none';
+      wrap.appendChild(badge);
+    }
+    grid.appendChild(wrap);
+  });
+  show('s-deck');
+}
+
+function closeDeckView() {
+  if (G.returnScreen) show(G.returnScreen);
+  else show('s-map');
+}
+
+// ═══════════════════════════════════════════════════════
+//  LESSONS
+// ═══════════════════════════════════════════════════════
+function openLesson(key) {
+  const data = LESSONS[key];
+  if (!data) return;
+  document.getElementById('ls-title').textContent = data.t;
+  document.getElementById('ls-sub').textContent = data.s;
+  document.getElementById('ls-body').innerHTML = data.secs.map(s =>
+    `<div class="lesson-sec"><h4>${s.h}</h4>${s.c}</div>`
+  ).join('');
+  document.getElementById('lesson-bg').classList.add('open');
+}
+
+function openLessonFromModal() {
+  const key = document.getElementById('mc-lesson-btn').dataset.lesson || 'homophone';
+  openLesson(key);
+}
+
+function closeLesson() {
+  document.getElementById('lesson-bg').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+//  VFX HELPERS
+// ═══════════════════════════════════════════════════════
+function bigFlash(text, color) {
+  const el = document.getElementById('big-flash');
+  el.textContent = text;
+  el.style.color = color;
+  el.style.textShadow = `0 0 30px ${color}`;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 1300);
+}
+
+function screenFlash(correct) {
+  const fo = document.getElementById('flash-overlay');
+  fo.className = correct ? 'flash-green' : 'flash-red';
+  setTimeout(() => fo.className = '', 400);
+}
+
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3600);
+}
+
+function showChReveal(text) {
+  const el = document.getElementById('ch-reveal');
+  el.textContent = text;
+  el.classList.remove('run');
+  void el.offsetWidth;
+  el.classList.add('run');
+}
+
+// ═══════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeLesson();
+    document.getElementById('modal-choices').classList.remove('open');
+  }
+});
+
+// Init
+initG();
+console.log('🎮 Grammatica Spire v2 — Prêt!');
+</script>
+
+</body>
+</html>
